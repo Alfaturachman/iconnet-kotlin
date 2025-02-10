@@ -37,13 +37,22 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_nama_pemasok"
+                        android:id="@+id/tvIdPelanggan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="ID Pelanggan #7521680439"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/tvNama"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="Kecepatan WiFi yang Lambat"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
+                        android:text="Tito Ardiansyah"
+                        android:textSize="14sp"
                         android:textColor="@android:color/black" />
 
                     <TextView
@@ -63,20 +72,37 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Isi Keluhan:"
+                        android:layout_marginBottom="2dp"
+                        android:text="Isi Pengaduan:"
                         android:textStyle="bold"
                         android:textSize="14sp"
-                        android:textColor="@android:color/black"
-                        android:layout_marginTop="4dp" />
+                        android:textColor="@android:color/black" />
 
                     <TextView
-                        android:id="@+id/tv_nama_usaha"
+                        android:id="@+id/tvIsiPengaduan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut scelerisque efficitur nisl, eu luctus erat pellentesque id."
                         android:textSize="14sp"
-                        android:textColor="@android:color/black"
-                        android:layout_marginTop="4dp" />
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:text="Tanggal Pengaduan:"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/tvTanggal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12 Januari 2025"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black" />
 
                 </LinearLayout>
 

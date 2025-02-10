@@ -28,10 +28,6 @@ class AdminFragment : Fragment() {
         _binding = FragmentAdminBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textGallery
-        adminViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
     }
 

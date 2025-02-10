@@ -41,7 +41,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="Kecepatan WiFi yang Lambat"
+                        android:text="Masalah WiFi Lemah di Area Tertentu"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@android:color/black" />
@@ -63,20 +63,53 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Isi Keluhan:"
+                        android:layout_marginBottom="4dp"
+                        android:text="Isi Pengaduan:"
                         android:textStyle="bold"
                         android:textSize="14sp"
-                        android:textColor="@android:color/black"
-                        android:layout_marginTop="4dp" />
+                        android:textColor="@android:color/black" />
 
                     <TextView
                         android:id="@+id/tv_nama_usaha"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut scelerisque efficitur nisl, eu luctus erat pellentesque id."
                         android:textSize="14sp"
-                        android:textColor="@android:color/black"
-                        android:layout_marginTop="4dp" />
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="Alamat:"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="Jl Majapahit No.42"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="Tanggal Pengaduan:"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="30 Desember 2024"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black" />
 
                 </LinearLayout>
 
