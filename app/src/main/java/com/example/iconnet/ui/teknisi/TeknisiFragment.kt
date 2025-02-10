@@ -1,4 +1,4 @@
-package com.example.iconnet.ui.slideshow
+package com.example.iconnet.ui.teknisi
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.iconnet.databinding.FragmentSlideshowBinding
+import com.example.iconnet.databinding.FragmentTeknisiBinding
 
-class SlideshowFragment : Fragment() {
+class TeknisiFragment : Fragment() {
 
-    private var _binding: FragmentSlideshowBinding? = null
+    private var _binding: FragmentTeknisiBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +22,14 @@ class SlideshowFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val slideshowViewModel =
-            ViewModelProvider(this).get(SlideshowViewModel::class.java)
+        val teknisiViewModel =
+            ViewModelProvider(this).get(TeknisiViewModel::class.java)
 
-        _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
+        _binding = FragmentTeknisiBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textSlideshow
-        slideshowViewModel.text.observe(viewLifecycleOwner) {
+        teknisiViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root
