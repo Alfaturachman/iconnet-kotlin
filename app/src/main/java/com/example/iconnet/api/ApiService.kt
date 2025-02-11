@@ -1,6 +1,8 @@
 package com.example.iconnet.api
 
 import com.example.iconnet.model.LoginRequest
+import com.example.iconnet.model.RegisterData
+import com.example.iconnet.model.RegisterRequest
 import com.example.iconnet.model.UserData
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -11,6 +13,9 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface ApiService {
-    @POST("login.php")  // Sesuaikan dengan endpoint API
+    @POST("login.php")
     fun loginUser(@Body request: LoginRequest): Call<ApiResponse<UserData>>
+
+    @POST("register.php")
+    fun registerUser(@Body request: RegisterRequest): Call<ApiResponse<RegisterData>>
 }

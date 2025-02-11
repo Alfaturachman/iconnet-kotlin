@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iconnet.MainActivity
@@ -25,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var etUsername: EditText
     private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
+    private lateinit var tvRegister: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
         etUsername = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)
+        tvRegister = findViewById(R.id.tvRegister)
 
         val sharedPreferences: SharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
         val userId = sharedPreferences.getInt("id_user", -1)
@@ -40,6 +43,10 @@ class LoginActivity : AppCompatActivity() {
         if (userId != -1) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
+        }
+
+        tvRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
 
         btnLogin.setOnClickListener {
@@ -104,15 +111,20 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         finish()
                     } else {
-                        Toast.makeText(this@LoginActivity, loginResponse.message, Toast.LENGTH_SHORT).show()
+                        Log.e("LoginError", "Login gagal: ${loginResponse.message ?: "Pesan error tidak tersedia"}")
+                        Toast.makeText(this@LoginActivity, loginResponse.message ?: "Terjadi kesalahan", Toast.LENGTH_SHORT).show()
                     }
                 } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("LoginError", "Gagal login: ${response.code()} - ${errorBody ?: "Response body kosong"}")
                     Toast.makeText(this@LoginActivity, "Gagal login, coba lagi", Toast.LENGTH_SHORT).show()
                 }
             }
 
+
             override fun onFailure(call: Call<ApiResponse<UserData>>, t: Throwable) {
                 btnLogin.isEnabled = true
+                Log.e("LoginFailure", "Terjadi kesalahan jaringan: ${t.message}", t)
                 Toast.makeText(this@LoginActivity, "Terjadi kesalahan: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
