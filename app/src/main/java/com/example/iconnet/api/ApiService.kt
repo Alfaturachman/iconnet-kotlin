@@ -22,4 +22,7 @@ interface ApiService {
 
     @GET("get_all_pengaduan.php")
     fun getPengaduan(): Call<ApiResponse<List<Pengaduan>>>
+
+    @POST("get_pengaduan_by_id.php")
+    fun getPengaduan(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<Pengaduan>>>
 }

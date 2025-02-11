@@ -1,4 +1,6 @@
-import android.content.res.ColorStateList
+package com.example.iconnet.ui.user
+
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,36 +10,34 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.iconnet.R
 import com.example.iconnet.model.Pengaduan
 
-class PengaduanAdapter(private val pengaduanList: List<Pengaduan>) :
+class PengaduanAdapter(private val context: Context, private val pengaduanList: List<Pengaduan>) :
     RecyclerView.Adapter<PengaduanAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvIdPelanggan: TextView = view.findViewById(R.id.tvIdPelanggan)
-        val tvNama: TextView = view.findViewById(R.id.tvNama)
+        val tvJudul: TextView = view.findViewById(R.id.tvJudul)
         val tvIsiPengaduan: TextView = view.findViewById(R.id.tvIsiPengaduan)
         val tvTanggal: TextView = view.findViewById(R.id.tvTanggal)
-        val tvStatus: TextView = view.findViewById(R.id.status)
+        val tvStatus: TextView = view.findViewById(R.id.tvStatus)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.daftar_pengaduan_admin, parent, false)
+            .inflate(R.layout.daftar_pengaduan_user, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val pengaduan = pengaduanList[position]
-
-        holder.tvIdPelanggan.text = "ID Pengaduan #${pengaduan.idPengaduan}"
-        holder.tvNama.text = pengaduan.namaUser
+        holder.tvJudul.text = "${pengaduan.judulPengaduan}"
         holder.tvIsiPengaduan.text = pengaduan.isiPengaduan
         holder.tvTanggal.text = pengaduan.tglPengaduan
+
         holder.tvStatus.text = getStatusText(pengaduan.statusPengaduan.toInt())
 
         // Ambil konteks
         val context = holder.itemView.context
 
-        // Tentukan warna background berdasarkan status
+        // Warna Background status
         val statusColor = when (pengaduan.statusPengaduan.toInt()) {
             0 -> ContextCompat.getColorStateList(context, R.color.yellow) // Antrian (Kuning)
             1 -> ContextCompat.getColorStateList(context, R.color.blue)   // Proses (Biru)

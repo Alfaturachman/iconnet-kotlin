@@ -36,24 +36,49 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvIdPelanggan"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:text="ID Pelanggan #7521680439"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
 
-                    <TextView
-                        android:id="@+id/tvNama"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="Tito Ardiansyah"
-                        android:textSize="14sp"
-                        android:textColor="@android:color/black" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvIdPelanggan"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="ID Pelanggan #7521680439"
+                                android:textColor="@android:color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvNama"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:text="Tito Ardiansyah"
+                                android:textColor="@android:color/black"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/btn_detail"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:background="@drawable/rectangle_background"
+                            android:backgroundTint="@color/primary"
+                            android:src="@drawable/ic_eye"
+                            android:padding="8dp"
+                            android:scaleType="centerInside"
+                            app:tint="@color/white" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/status"
@@ -105,19 +130,6 @@
                         android:textColor="@android:color/black" />
 
                 </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/btn_detail"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/rectangle_background"
-                    android:backgroundTint="@color/primary"
-                    android:src="@drawable/ic_eye"
-                    android:padding="8dp"
-                    android:layout_gravity="start"
-                    android:scaleType="centerInside"
-                    app:tint="@color/white" />
             </LinearLayout>
 
         </LinearLayout>
