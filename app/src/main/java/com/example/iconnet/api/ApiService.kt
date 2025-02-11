@@ -3,7 +3,8 @@ package com.example.iconnet.api
 import com.example.iconnet.model.LoginRequest
 import com.example.iconnet.model.RegisterData
 import com.example.iconnet.model.RegisterRequest
-import com.example.iconnet.model.UserData
+import com.example.iconnet.model.LoginData
+import com.example.iconnet.model.Pengaduan
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -14,8 +15,11 @@ import retrofit2.http.POST
 
 interface ApiService {
     @POST("login.php")
-    fun loginUser(@Body request: LoginRequest): Call<ApiResponse<UserData>>
+    fun loginUser(@Body request: LoginRequest): Call<ApiResponse<LoginData>>
 
     @POST("register.php")
     fun registerUser(@Body request: RegisterRequest): Call<ApiResponse<RegisterData>>
+
+    @GET("get_all_pengaduan.php")
+    fun getPengaduan(): Call<ApiResponse<List<Pengaduan>>>
 }

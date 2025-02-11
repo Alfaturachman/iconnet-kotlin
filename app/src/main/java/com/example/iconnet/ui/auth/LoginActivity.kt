@@ -14,7 +14,7 @@ import com.example.iconnet.MainActivity
 import com.example.iconnet.R
 import com.example.iconnet.api.*
 import com.example.iconnet.model.LoginRequest
-import com.example.iconnet.model.UserData
+import com.example.iconnet.model.LoginData
 import org.json.JSONObject
 
 import retrofit2.Call
@@ -80,8 +80,8 @@ class LoginActivity : AppCompatActivity() {
 
         btnLogin.isEnabled = false
 
-        RetrofitClient.instance.loginUser(request).enqueue(object : Callback<ApiResponse<UserData>> {
-            override fun onResponse(call: Call<ApiResponse<UserData>>, response: Response<ApiResponse<UserData>>) {
+        RetrofitClient.instance.loginUser(request).enqueue(object : Callback<ApiResponse<LoginData>> {
+            override fun onResponse(call: Call<ApiResponse<LoginData>>, response: Response<ApiResponse<LoginData>>) {
                 btnLogin.isEnabled = true
 
                 if (response.isSuccessful && response.body() != null) {
@@ -122,7 +122,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
 
-            override fun onFailure(call: Call<ApiResponse<UserData>>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse<LoginData>>, t: Throwable) {
                 btnLogin.isEnabled = true
                 Log.e("LoginFailure", "Terjadi kesalahan jaringan: ${t.message}", t)
                 Toast.makeText(this@LoginActivity, "Terjadi kesalahan: ${t.message}", Toast.LENGTH_SHORT).show()
