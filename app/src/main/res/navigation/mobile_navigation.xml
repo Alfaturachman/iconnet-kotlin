@@ -28,4 +28,9 @@
         android:name="com.example.iconnet.ui.teknisi.TeknisiFragment"
         android:label="@string/menu_teknisi"
         tools:layout="@layout/fragment_teknisi" />
+
+    <fragment
+        android:id="@+id/nav_logout"
+        android:name="com.example.iconnet.ui.auth.LogoutActivity"
+        android:label="Logout" />
 </navigation>
