@@ -96,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
                             putInt("id_user", userData.id)
                             putString("email", userData.email)
                             putString("nama", userData.nama)
-                            putString("level", userData.role)
+                            putString("role", userData.role)
                             apply()
                         }
 
@@ -105,7 +105,7 @@ class LoginActivity : AppCompatActivity() {
                         Log.d("UserSession", "ID: ${storedPrefs.getInt("id_user", 0)}")
                         Log.d("UserSession", "Email: ${storedPrefs.getString("email", "null")}")
                         Log.d("UserSession", "Nama: ${storedPrefs.getString("nama", "null")}")
-                        Log.d("UserSession", "Level: ${storedPrefs.getString("level", "null")}")
+                        Log.d("UserSession", "Level: ${storedPrefs.getString("role", "null")}")
 
                         Toast.makeText(this@LoginActivity, "Login Berhasil", Toast.LENGTH_SHORT).show()
 

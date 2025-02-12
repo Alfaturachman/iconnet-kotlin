@@ -57,7 +57,7 @@ class UserFragment : Fragment() {
             ) {
                 if (response.isSuccessful && response.body()?.status == true) {
                     val pengaduanList = response.body()?.data ?: emptyList()
-                    binding.recyclerViewDaftarStok.apply {
+                    binding.recyclerViewPengaduanUser.apply {
                         layoutManager = LinearLayoutManager(requireContext())
                         adapter = PengaduanAdapter(requireContext(), pengaduanList)
                     }

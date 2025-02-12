@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iconnet.databinding.ActivityMainBinding
+import android.content.Context
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,16 +27,16 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        binding.appBarMain.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .setAnchorView(R.id.fab).show()
-        }
+        val sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val role = sharedPreferences.getString("role", "")
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
+        // Konfigurasi menu berdasarkan role
+        setupMenu(navView.menu, role)
+
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home, R.id.nav_user, R.id.nav_admin, R.id.nav_teknisi, R.id.nav_logout
@@ -45,8 +46,21 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
+    private fun setupMenu(menu: Menu, role: String?) {
+        // Sembunyikan semua menu terlebih dahulu
+        menu.findItem(R.id.nav_user)?.isVisible = false
+        menu.findItem(R.id.nav_admin)?.isVisible = false
+        menu.findItem(R.id.nav_teknisi)?.isVisible = false
+
+        // Tampilkan menu sesuai dengan role
+        when (role) {
+            "Admin" -> menu.findItem(R.id.nav_admin)?.isVisible = true
+            "User" -> menu.findItem(R.id.nav_user)?.isVisible = true
+            "Teknisi" -> menu.findItem(R.id.nav_teknisi)?.isVisible = true
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }

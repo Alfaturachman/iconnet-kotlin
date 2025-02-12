@@ -25,4 +25,7 @@ interface ApiService {
 
     @POST("get_pengaduan_by_id.php")
     fun getPengaduan(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<Pengaduan>>>
+
+    @POST("get_tugas_teknisi.php")
+    fun getTugasTeknisi(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<Pengaduan>>>
 }
