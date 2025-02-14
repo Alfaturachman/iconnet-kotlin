@@ -1,5 +1,6 @@
 package com.example.iconnet.api
 
+import com.example.iconnet.model.DashboardData
 import com.example.iconnet.model.LoginRequest
 import com.example.iconnet.model.RegisterData
 import com.example.iconnet.model.RegisterRequest
@@ -28,4 +29,7 @@ interface ApiService {
 
     @POST("get_tugas_teknisi.php")
     fun getTugasTeknisi(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<Pengaduan>>>
+
+    @GET("get_dashboard_admin.php")
+    fun getDashboardData(): Call<ApiResponse<DashboardData>>
 }

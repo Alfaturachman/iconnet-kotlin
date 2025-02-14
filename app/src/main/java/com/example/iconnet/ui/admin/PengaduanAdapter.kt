@@ -1,6 +1,5 @@
 package com.example.iconnet.ui.admin
 
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +28,8 @@ class PengaduanAdapter(private val pengaduanList: List<Pengaduan>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val pengaduan = pengaduanList[position]
+        // Ambil konteks
+        val context = holder.itemView.context
 
         holder.tvIdPelanggan.text = "ID Pengaduan #${pengaduan.idPengaduan}"
         holder.tvNama.text = pengaduan.namaUser
@@ -36,16 +37,13 @@ class PengaduanAdapter(private val pengaduanList: List<Pengaduan>) :
         holder.tvTanggal.text = pengaduan.tglPengaduan
         holder.tvStatus.text = getStatusText(pengaduan.statusPengaduan.toInt())
 
-        // Ambil konteks
-        val context = holder.itemView.context
-
         // Tentukan warna background berdasarkan status
         val statusColor = when (pengaduan.statusPengaduan.toInt()) {
-            0 -> ContextCompat.getColorStateList(context, R.color.yellow) // Antrian (Kuning)
-            1 -> ContextCompat.getColorStateList(context, R.color.blue)   // Proses (Biru)
-            2 -> ContextCompat.getColorStateList(context, R.color.primary)  // Selesai (Hijau)
-            3 -> ContextCompat.getColorStateList(context, R.color.red)    // Batal (Merah)
-            else -> ContextCompat.getColorStateList(context, R.color.black) // Default Hitam
+            0 -> ContextCompat.getColorStateList(context, R.color.yellow)
+            1 -> ContextCompat.getColorStateList(context, R.color.blue)
+            2 -> ContextCompat.getColorStateList(context, R.color.primary)
+            3 -> ContextCompat.getColorStateList(context, R.color.red)
+            else -> ContextCompat.getColorStateList(context, R.color.black)
         }
 
         // Set background tint
