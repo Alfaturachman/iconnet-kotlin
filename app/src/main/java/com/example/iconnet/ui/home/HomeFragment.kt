@@ -33,29 +33,26 @@ class HomeFragment : Fragment() {
     ): View {
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        val root: View = binding.root
 
         // Check SharedPreferences
         val sharedPreferences: SharedPreferences = requireContext().getSharedPreferences("UserSession", MODE_PRIVATE)
-        val userId = sharedPreferences.getString("id_user", null)
-        val userRole = sharedPreferences.getString("role", null)
+        val userId = sharedPreferences.getInt("id_user", -1)
+        val userRole = sharedPreferences.getString("role", "0")
 
         when (userRole) {
-            "admin" -> {
+            "Admin" -> {
                 binding.rekapDataUser.visibility = View.VISIBLE
             }
-            "teknisi" -> {
+            "Teknisi" -> {
                 binding.rekapDataUser.visibility = View.GONE
             }
-            "user" -> {
+            "User" -> {
                 binding.rekapDataUser.visibility = View.GONE
-            }
-            else -> {
-                Toast.makeText(requireContext(), "Level pengguna tidak valid", Toast.LENGTH_SHORT).show()
             }
         }
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
         fetchDashboardData()
         return root
     }
