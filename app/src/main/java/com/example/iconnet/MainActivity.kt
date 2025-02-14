@@ -13,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iconnet.databinding.ActivityMainBinding
 import android.content.Context
+import com.example.iconnet.databinding.NavHeaderMainBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,6 +30,8 @@ class MainActivity : AppCompatActivity() {
 
         val sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val role = sharedPreferences.getString("role", "")
+        val userNama = sharedPreferences.getString("nama", null)
+        val userEmail = sharedPreferences.getString("email", null)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -44,6 +47,15 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        // Mengakses elemen dalam nav_header_main.xml
+        val headerView = navView.getHeaderView(0)
+        val navHeaderBinding = NavHeaderMainBinding.bind(headerView)
+
+        // Set properti di header (contoh)
+        navHeaderBinding.imageView.setImageResource(R.mipmap.ic_launcher_round)
+        navHeaderBinding.tvNavNama.text = userNama
+        navHeaderBinding.tvNavRole.text = role
     }
 
     private fun setupMenu(menu: Menu, role: String?) {

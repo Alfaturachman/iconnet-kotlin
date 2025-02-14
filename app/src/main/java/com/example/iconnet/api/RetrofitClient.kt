@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private val ip: String = "192.168.1.39"
+    private val ip: String = "192.168.0.106"
 
     // Buat BASE_URL dengan menggabungkan string
     private val BASE_URL = "http://$ip:80/iconnet_api/"
