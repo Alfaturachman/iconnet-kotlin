@@ -1,9 +1,11 @@
 package com.example.iconnet.ui.admin.master_user
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +14,7 @@ import com.example.iconnet.R
 import com.example.iconnet.api.ApiResponse
 import com.example.iconnet.api.RetrofitClient
 import com.example.iconnet.model.AllUser
+import com.example.iconnet.ui.admin.master_user.tambah.TambahUserActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,8 +30,16 @@ class MasterUserFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_master_user, container, false)
+
         recyclerView = view.findViewById(R.id.recyclerViewDaftarUser)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        val btnTambahUser: Button = view.findViewById(R.id.btnTambahUser)
+        btnTambahUser.setOnClickListener {
+            val intent = Intent(requireContext(), TambahUserActivity::class.java)
+            startActivity(intent)
+        }
+
         fetchUsers()
         return view
     }

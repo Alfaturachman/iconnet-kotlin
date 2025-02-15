@@ -18,6 +18,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.admin.master_user.edit.EditUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.master_user.tambah.TambahUserActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.admin.PengaduanActivity"
             android:exported="false" />
         <activity

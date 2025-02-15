@@ -15,4 +15,11 @@
         <item>Reza Kaca Film</item>
         <item>Tito Kicau Mania</item>
     </string-array>
+
+    <string-array name="role">
+        <item>Pilih Role</item>
+        <item>Admin</item>
+        <item>Teknisi</item>
+        <item>User</item>
+    </string-array>
 </resources>
