@@ -24,6 +24,8 @@ import retrofit2.Response
 
 class TambahTugasActivity : AppCompatActivity() {
 
+    private var idTeknisi: Int = -1
+    private var daerahPengaduan: String = "null"
     private var selectedDaerah: String = "Tidak ada Daerah"
     private var teknisiList: List<TeknisiData> = listOf()
     private var selectedTeknisi: TeknisiData? = null
@@ -59,6 +61,8 @@ class TambahTugasActivity : AppCompatActivity() {
         val namaPelanggan = intent.getStringExtra("nama_pelanggan") ?: "N/A"
         val judulPengaduan = intent.getStringExtra("judul_pengaduan") ?: "N/A"
         val isiPengaduan = intent.getStringExtra("isi_pengaduan") ?: "N/A"
+        idTeknisi = intent.getIntExtra("id_teknisi", -1)
+        daerahPengaduan = intent.getStringExtra("daerah_pengaduan") ?: "N/A"
 
         // Fungsi untuk mengatur status tombol
         fun updateButtonState() {
@@ -68,24 +72,37 @@ class TambahTugasActivity : AppCompatActivity() {
         updateButtonState()
 
         val spinnerDaerahSemarang: Spinner = findViewById(R.id.spinnerDaerahSemarang)
-        // Ambil data daerah dari resources
+
+// Ambil data daerah dari resources
         val daerahSemarang = resources.getStringArray(R.array.daerah_semarang)
-        // Buat adapter untuk Spinner
+
+// Buat adapter untuk Spinner
         val adapterDaerah = ArrayAdapter(
             this, // Context
             android.R.layout.simple_spinner_item,
             daerahSemarang // Data
         )
         adapterDaerah.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         // Set adapter ke Spinner
         spinnerDaerahSemarang.adapter = adapterDaerah
-        // Atur Spinner untuk tidak memilih item apa pun secara default
-        spinnerDaerahSemarang.setSelection(0, false)
+
+        // Ambil data dari intent
+        val daerahPengaduan = intent.getStringExtra("daerah_pengaduan") ?: "N/A"
+
+        // Cari posisi item dalam array
+        val selectedIndex = daerahSemarang.indexOf(daerahPengaduan)
+
+        // Jika ditemukan, set spinner ke posisi tersebut, jika tidak biarkan default
+        if (selectedIndex != -1) {
+            spinnerDaerahSemarang.setSelection(selectedIndex)
+        }
+
         // Handle item yang dipilih
         var selectedDaerah: String? = null
         spinnerDaerahSemarang.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (position > 0) { // Abaikan placeholder
+                if (position > 0) { // Abaikan placeholder jika ada
                     selectedDaerah = daerahSemarang[position]
                     updateButtonState()
                     Log.d("Selected Spinner", "Teknisi yang dipilih: $selectedDaerah")
@@ -163,7 +180,7 @@ class TambahTugasActivity : AppCompatActivity() {
                             Log.d("Spinner", "Position selected: $position") // Debugging posisi yang dipilih
 
                             if (position > 0) { // Pastikan bukan "Pilih Teknisi"
-                                selectedTeknisi = teknisiList[position - 1] // Ambil dari teknisiList dengan offset -1
+                                selectedTeknisi = teknisiList[position - 1]
                                 Log.d("Spinner", "Teknisi yang dipilih: ${selectedTeknisi?.namaTeknisi}")
                                 Log.d("Spinner", "ID Teknisi yang dipilih: ${selectedTeknisi?.idTeknisi}")
                             } else {

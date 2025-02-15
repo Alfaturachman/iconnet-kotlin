@@ -80,6 +80,8 @@ class PengaduanAdapter(private val pengaduanList: List<Pengaduan>) :
             putExtra("nama_pelanggan", pengaduan.namaUser)
             putExtra("judul_pengaduan", pengaduan.judulPengaduan)
             putExtra("isi_pengaduan", pengaduan.isiPengaduan)
+            putExtra("id_teknisi", pengaduan.idTeknisi.toIntOrNull() ?: -1)
+            putExtra("daerah_pengaduan", pengaduan.daerahPengaduan)
         }
         context.startActivity(intent)
     }
