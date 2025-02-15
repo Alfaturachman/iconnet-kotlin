@@ -1,5 +1,6 @@
 package com.example.iconnet.api
 
+import com.example.iconnet.model.AllUser
 import com.example.iconnet.model.DashboardData
 import com.example.iconnet.model.LoginRequest
 import com.example.iconnet.model.RegisterData
@@ -43,4 +44,7 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("update_tugas_teknisi.php")
     fun updatePengaduan(@Body request: UpdatePengaduanRequest): Call<ApiResponse<UpdatePengaduanRequest>>
+
+    @GET("get_all_user.php")
+    fun getAllUsers(): Call<ApiResponse<List<AllUser>>>
 }

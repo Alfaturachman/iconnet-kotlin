@@ -24,6 +24,12 @@
         tools:layout="@layout/fragment_admin" />
 
     <fragment
+        android:id="@+id/nav_master_user"
+        android:name="com.example.iconnet.ui.admin.master_user.MasterUserFragment"
+        android:label="@string/menu_user"
+        tools:layout="@layout/fragment_master_user" />
+
+    <fragment
         android:id="@+id/nav_teknisi"
         android:name="com.example.iconnet.ui.teknisi.TeknisiFragment"
         android:label="@string/menu_teknisi"

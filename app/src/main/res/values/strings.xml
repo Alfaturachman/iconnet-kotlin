@@ -9,9 +9,8 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_user">User</string>
+    <string name="menu_master_user">Master User</string>
     <string name="menu_admin">Admin</string>
     <string name="menu_teknisi">Teknisi</string>
     <string name="menu_logout">Logout</string>
-
-
 </resources>
