@@ -1,19 +1,25 @@
 package com.example.iconnet.ui.admin
 
+import android.app.Activity
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iconnet.R
 import com.example.iconnet.model.Pengaduan
+import com.example.iconnet.ui.admin.status_pengaduan.AntrianFragment
 import com.example.iconnet.ui.admin.tambah_tugas.TambahTugasActivity
 
-class PengaduanAdapter(private val pengaduanList: List<Pengaduan>) :
-    RecyclerView.Adapter<PengaduanAdapter.ViewHolder>() {
+class PengaduanAdapter(
+    private val pengaduanList: List<Pengaduan>,
+    private val startForResult: ActivityResultLauncher<Intent>
+) : RecyclerView.Adapter<PengaduanAdapter.ViewHolder>() {
+    // Kode lainnya tetap sama
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvIdPelanggan: TextView = view.findViewById(R.id.tvIdPelanggan)
@@ -75,7 +81,7 @@ class PengaduanAdapter(private val pengaduanList: List<Pengaduan>) :
     // Fungsi untuk menangani klik tombol detail
     private fun handleAmbilClick(pengaduan: Pengaduan, context: android.content.Context) {
         val intent = Intent(context, TambahTugasActivity::class.java).apply {
-            putExtra("id_pengaduan", pengaduan.idPengaduan)
+            putExtra("id_pengaduan", pengaduan.idPengaduan?.toIntOrNull() ?: -1)
             putExtra("tanggal_pengaduan", pengaduan.tglPengaduan)
             putExtra("nama_pelanggan", pengaduan.namaUser)
             putExtra("judul_pengaduan", pengaduan.judulPengaduan)
@@ -83,6 +89,7 @@ class PengaduanAdapter(private val pengaduanList: List<Pengaduan>) :
             putExtra("id_teknisi", pengaduan.idTeknisi?.toIntOrNull() ?: -1)
             putExtra("daerah_pengaduan", pengaduan.daerahPengaduan)
         }
-        context.startActivity(intent)
+        // Gunakan startForResult yang diterima dari konstruktor
+        startForResult.launch(intent)
     }
 }

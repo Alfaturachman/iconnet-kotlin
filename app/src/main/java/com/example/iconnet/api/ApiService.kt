@@ -8,8 +8,7 @@ import com.example.iconnet.model.LoginData
 import com.example.iconnet.model.Pengaduan
 import com.example.iconnet.model.TeknisiData
 import com.example.iconnet.model.TotalStatsAdmin
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
+import com.example.iconnet.model.UpdatePengaduanRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -40,4 +39,8 @@ interface ApiService {
 
     @GET("get_all_teknisi.php")
     fun getTeknisi(): Call<ApiResponse<List<TeknisiData>>>
+
+    @Headers("Content-Type: application/json")
+    @POST("update_tugas_teknisi.php")
+    fun updatePengaduan(@Body request: UpdatePengaduanRequest): Call<ApiResponse<UpdatePengaduanRequest>>
 }

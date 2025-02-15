@@ -1,6 +1,7 @@
 package com.example.iconnet.ui.admin.tambah_tugas
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -17,6 +18,7 @@ import com.example.iconnet.R
 import com.example.iconnet.api.ApiResponse
 import com.example.iconnet.api.RetrofitClient
 import com.example.iconnet.model.TeknisiData
+import com.example.iconnet.model.UpdatePengaduanRequest
 import com.example.iconnet.utils.DateUtils
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,10 +27,12 @@ import retrofit2.Response
 class TambahTugasActivity : AppCompatActivity() {
 
     private var idTeknisi: Int = -1
+    private var idPengaduan: Int = -1
     private var daerahPengaduan: String = "null"
     private var selectedDaerah: String = "Tidak ada Daerah"
     private var teknisiList: List<TeknisiData> = listOf()
     private var selectedTeknisi: TeknisiData? = null
+    private lateinit var btnTambahTugas: Button
     private lateinit var spinnerDaerahSemarang: Spinner
     private lateinit var spinnerNamaTeknisi: Spinner
 
@@ -53,10 +57,9 @@ class TambahTugasActivity : AppCompatActivity() {
         val etNamaPelanggan: TextView = findViewById(R.id.etNamaPelanggan)
         val etJudulPengaduan: TextView = findViewById(R.id.etJudulPengaduan)
         val etIsiPengaduan: TextView = findViewById(R.id.etIsiPengaduan)
-        val btnTambahTugas: Button = findViewById(R.id.btnTambahTugas)
 
         // Ambil data dari Intent
-        val idPengaduan = intent.getStringExtra("id_pengaduan") ?: "N/A"
+        idPengaduan = intent.getIntExtra("id_pengaduan", -1)
         val tanggalPengaduan = intent.getStringExtra("tanggal_pengaduan") ?: "N/A"
         val formattedDate = DateUtils.formatTanggal(tanggalPengaduan)
         val namaPelanggan = intent.getStringExtra("nama_pelanggan") ?: "N/A"
@@ -66,10 +69,7 @@ class TambahTugasActivity : AppCompatActivity() {
         daerahPengaduan = intent.getStringExtra("daerah_pengaduan") ?: "N/A"
 
         // Fungsi untuk mengatur status tombol
-        fun updateButtonState() {
-            btnTambahTugas.isEnabled = selectedTeknisi != null && selectedDaerah != null
-        }
-
+        btnTambahTugas = findViewById(R.id.btnTambahTugas)
         updateButtonState()
 
         spinnerDaerahSemarang = findViewById(R.id.spinnerDaerahSemarang)
@@ -86,25 +86,48 @@ class TambahTugasActivity : AppCompatActivity() {
 
         // Button Simpan
         btnTambahTugas.setOnClickListener {
-            // Validasi tambahan sebelum melanjutkan
             if (selectedTeknisi == null || selectedDaerah == null) {
-                Toast.makeText(this@TambahTugasActivity, "Harap pilih teknisi dan daerah terlebih dahulu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Harap pilih teknisi dan daerah terlebih dahulu", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
             // Log hasil putExtra
             Log.d("TambahTugasActivity", "ID Pengaduan: $idPengaduan")
             Log.d("TambahTugasActivity", "Daerah Pengaduan: $selectedDaerah")
 
-            // Pastikan selectedTeknisi tidak null sebelum mengakses properti
-            if (selectedTeknisi != null) {
-                Log.d("TambahTugasActivity", "ID Teknisi: ${selectedTeknisi?.idTeknisi}")
-                Log.d("TambahTugasActivity", "Nama Teknisi: ${selectedTeknisi?.namaTeknisi}")
-            } else {
-                Log.d("TambahTugasActivity", "Teknisi belum dipilih")
-            }
+            val request = UpdatePengaduanRequest(
+                id_pengaduan = idPengaduan,
+                id_user = selectedTeknisi?.idTeknisi,
+                daerah_pengaduan = selectedDaerah
+            )
 
-            Toast.makeText(this@TambahTugasActivity, "Tambah tugas berhasil", Toast.LENGTH_SHORT).show()
+            RetrofitClient.instance.updatePengaduan(request)
+                .enqueue(object : Callback<ApiResponse<UpdatePengaduanRequest>> { // Tidak pakai List
+                    override fun onResponse(call: Call<ApiResponse<UpdatePengaduanRequest>>, response: Response<ApiResponse<UpdatePengaduanRequest>>) {
+                        if (response.isSuccessful) {
+                            val apiResponse = response.body()
+                            Toast.makeText(this@TambahTugasActivity, apiResponse?.message, Toast.LENGTH_SHORT).show()
+                            Log.d("TambahTugasActivity", "Response: ${apiResponse?.message}")
+                            setResult(RESULT_OK)
+                            finish()
+                        } else {
+                            Toast.makeText(this@TambahTugasActivity, "Gagal memperbarui data", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ApiResponse<UpdatePengaduanRequest>>, t: Throwable) {
+                        Toast.makeText(this@TambahTugasActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("TambahTugasActivity", "Error: ${t.message}")
+                    }
+                })
         }
+    }
+
+    private fun updateButtonState() {
+        val isFormValid = selectedTeknisi != null && selectedDaerah.isNotEmpty() && selectedDaerah != "null"
+        btnTambahTugas.isEnabled = isFormValid
+
+        Log.d("ButtonState", "isEnabled: $isFormValid | selectedTeknisi: ${selectedTeknisi?.idTeknisi} | selectedDaerah: $selectedDaerah")
     }
 
     private fun setupSpinnerDaerah(daerahPengaduan: String) {
@@ -132,6 +155,7 @@ class TambahTugasActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedDaerah = if (position > 0) daerahSemarang[position] else null.toString()
                 Log.d("Selected Spinner", "Daerah yang dipilih: $selectedDaerah")
+                updateButtonState()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -178,6 +202,7 @@ class TambahTugasActivity : AppCompatActivity() {
 
                             if (position > 0) { // Pastikan bukan "Pilih Teknisi"
                                 selectedTeknisi = teknisiList[position - 1] // -1 karena ada placeholder
+                                updateButtonState()
                                 Log.d("Spinner", "Teknisi yang dipilih: ${selectedTeknisi?.namaTeknisi}")
                                 Log.d("Spinner", "ID Teknisi yang dipilih: ${selectedTeknisi?.idTeknisi}")
                             } else {
