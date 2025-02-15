@@ -7,6 +7,7 @@ import com.example.iconnet.model.RegisterData
 import com.example.iconnet.model.RegisterRequest
 import com.example.iconnet.model.LoginData
 import com.example.iconnet.model.Pengaduan
+import com.example.iconnet.model.RoleData
 import com.example.iconnet.model.TeknisiData
 import com.example.iconnet.model.TotalStatsAdmin
 import com.example.iconnet.model.UpdatePengaduanRequest
@@ -47,4 +48,7 @@ interface ApiService {
 
     @GET("get_all_user.php")
     fun getAllUsers(): Call<ApiResponse<List<AllUser>>>
+
+    @GET("get_role.php")
+    fun getRoles(): Call<ApiResponse<List<RoleData>>>
 }
