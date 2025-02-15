@@ -6,6 +6,7 @@ import com.example.iconnet.model.RegisterData
 import com.example.iconnet.model.RegisterRequest
 import com.example.iconnet.model.LoginData
 import com.example.iconnet.model.Pengaduan
+import com.example.iconnet.model.TotalStatsAdmin
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -32,4 +33,7 @@ interface ApiService {
 
     @GET("get_dashboard_admin.php")
     fun getDashboardData(): Call<ApiResponse<DashboardData>>
+
+    @GET("get_stats_admin.php")
+    fun getPengaduanData(): Call<ApiResponse<List<TotalStatsAdmin>>>
 }
