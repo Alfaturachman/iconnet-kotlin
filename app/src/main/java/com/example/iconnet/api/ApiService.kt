@@ -6,6 +6,7 @@ import com.example.iconnet.model.RegisterData
 import com.example.iconnet.model.RegisterRequest
 import com.example.iconnet.model.LoginData
 import com.example.iconnet.model.Pengaduan
+import com.example.iconnet.model.TeknisiData
 import com.example.iconnet.model.TotalStatsAdmin
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -36,4 +37,7 @@ interface ApiService {
 
     @GET("get_stats_admin.php")
     fun getPengaduanData(): Call<ApiResponse<List<TotalStatsAdmin>>>
+
+    @GET("get_all_teknisi.php")
+    fun getTeknisi(): Call<ApiResponse<List<TeknisiData>>>
 }

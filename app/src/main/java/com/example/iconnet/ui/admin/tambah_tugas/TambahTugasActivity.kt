@@ -14,12 +14,20 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iconnet.R
+import com.example.iconnet.api.ApiResponse
+import com.example.iconnet.api.RetrofitClient
+import com.example.iconnet.model.TeknisiData
 import com.example.iconnet.utils.DateUtils
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class TambahTugasActivity : AppCompatActivity() {
 
     private var selectedDaerah: String = "Tidak ada Daerah"
-    private var selectedTeknisi: String = "Tidak ada Teknisi"
+    private var teknisiList: List<TeknisiData> = listOf()
+    private var selectedTeknisi: TeknisiData? = null
+    private lateinit var spinnerNamaTeknisi: Spinner
 
     @SuppressLint("MissingInflatedId", "WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,39 +100,8 @@ class TambahTugasActivity : AppCompatActivity() {
             }
         }
 
-        val spinnerNamaTeknisi: Spinner = findViewById(R.id.spinnerNamaTeknisi)
-        // Ambil data teknisi dari resources
-        val namaTeknisi = resources.getStringArray(R.array.nama_teknisi)
-        // Buat adapter untuk Spinner
-        val adapterTeknisi = ArrayAdapter(
-            this, // Context
-            android.R.layout.simple_spinner_item, // Layout default untuk item
-            namaTeknisi // Data
-        )
-        // Atur layout dropdown
-        adapterTeknisi.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        // Set adapter ke Spinner
-        spinnerNamaTeknisi.adapter = adapterTeknisi
-        // Atur Spinner untuk tidak memilih item apa pun secara default
-        spinnerNamaTeknisi.setSelection(0, false)
-        // Handle item yang dipilih
-        var selectedTeknisi: String? = null
-        spinnerNamaTeknisi.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (position > 0) { // Abaikan placeholder
-                    selectedTeknisi = namaTeknisi[position]
-                    updateButtonState()
-                    Log.d("Selected Spinner", "Teknisi yang dipilih: $selectedTeknisi")
-                } else {
-                    selectedTeknisi = null // Jika placeholder dipilih, set ke null
-                    updateButtonState()
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Tidak ada yang dipilih
-            }
-        }
+        spinnerNamaTeknisi = findViewById(R.id.spinnerNamaTeknisi)
+        loadTeknisiData()
 
         // Set nilai ke EditText
         etTanggalPengaduan.setText(formattedDate)
@@ -142,10 +119,71 @@ class TambahTugasActivity : AppCompatActivity() {
             // Log hasil putExtra
             Log.d("TambahTugasActivity", "ID Pengaduan: $idPengaduan")
             Log.d("TambahTugasActivity", "Daerah Pengaduan: $selectedDaerah")
-            Log.d("TambahTugasActivity", "ID Teknisi: $selectedTeknisi")
-            Log.d("TambahTugasActivity", "Nama Teknisi: $selectedTeknisi")
+
+            // Pastikan selectedTeknisi tidak null sebelum mengakses properti
+            if (selectedTeknisi != null) {
+                Log.d("TambahTugasActivity", "ID Teknisi: ${selectedTeknisi?.idTeknisi}")
+                Log.d("TambahTugasActivity", "Nama Teknisi: ${selectedTeknisi?.namaTeknisi}")
+            } else {
+                Log.d("TambahTugasActivity", "Teknisi belum dipilih")
+            }
 
             Toast.makeText(this@TambahTugasActivity, "Tambah tugas berhasil", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun loadTeknisiData() {
+        RetrofitClient.instance.getTeknisi().enqueue(object : Callback<ApiResponse<List<TeknisiData>>> {
+            override fun onResponse(
+                call: Call<ApiResponse<List<TeknisiData>>>,
+                response: Response<ApiResponse<List<TeknisiData>>>
+            ) {
+                if (response.isSuccessful && response.body() != null) {
+                    teknisiList = response.body()!!.data
+
+                    val teknisiNames = teknisiList.map { it.namaTeknisi }.toMutableList()
+                    teknisiNames.add(0, "Pilih Teknisi") // Tambahkan placeholder di awal
+
+                    val adapterTeknisi = ArrayAdapter(
+                        this@TambahTugasActivity,
+                        android.R.layout.simple_spinner_item,
+                        teknisiNames
+                    )
+                    adapterTeknisi.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    spinnerNamaTeknisi.adapter = adapterTeknisi
+
+                    // Listener untuk menangani item yang dipilih
+                    spinnerNamaTeknisi.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            Log.d("Spinner", "Position selected: $position") // Debugging posisi yang dipilih
+
+                            if (position > 0) { // Pastikan bukan "Pilih Teknisi"
+                                selectedTeknisi = teknisiList[position - 1] // Ambil dari teknisiList dengan offset -1
+                                Log.d("Spinner", "Teknisi yang dipilih: ${selectedTeknisi?.namaTeknisi}")
+                                Log.d("Spinner", "ID Teknisi yang dipilih: ${selectedTeknisi?.idTeknisi}")
+                            } else {
+                                selectedTeknisi = null
+                                Log.d("Spinner", "Teknisi belum dipilih")
+                            }
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>?) {}
+                    }
+                } else {
+                    Log.e("API_ERROR", "Response Error: ${response.errorBody()?.string()}")
+                    Toast.makeText(this@TambahTugasActivity, "Gagal mengambil data", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<List<TeknisiData>>>, t: Throwable) {
+                Log.e("API Error", t.message.toString())
+                Toast.makeText(this@TambahTugasActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
     }
 }
