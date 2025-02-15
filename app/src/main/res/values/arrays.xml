@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="daerah_semarang">
+        <item>Pilih Daerah</item>
+        <item>Semarang Tengah</item>
+        <item>Semarang Barat</item>
+        <item>Semarang Timur</item>
+        <item>Semarang Selatan</item>
+    </string-array>
+
+    <string-array name="nama_teknisi">
+        <item>Pilih Teknisi</item>
+        <item>Arif Hidden Gem</item>
+        <item>Mamat Gunshop</item>
+        <item>Reza Kaca Film</item>
+        <item>Tito Kicau Mania</item>
+    </string-array>
+</resources>

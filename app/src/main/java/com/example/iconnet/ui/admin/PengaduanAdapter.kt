@@ -35,7 +35,7 @@ class PengaduanAdapter(private val pengaduanList: List<Pengaduan>) :
         // Ambil konteks
         val context = holder.itemView.context
 
-        holder.tvIdPelanggan.text = "ID Pengaduan #${pengaduan.idPengaduan}"
+        holder.tvIdPelanggan.text = "ID #${pengaduan.idPelanggan}"
         holder.tvNama.text = pengaduan.namaUser
         holder.tvIsiPengaduan.text = pengaduan.isiPengaduan
         holder.tvTanggal.text = pengaduan.tglPengaduan
