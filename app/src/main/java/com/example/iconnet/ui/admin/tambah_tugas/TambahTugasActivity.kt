@@ -29,6 +29,7 @@ class TambahTugasActivity : AppCompatActivity() {
     private var selectedDaerah: String = "Tidak ada Daerah"
     private var teknisiList: List<TeknisiData> = listOf()
     private var selectedTeknisi: TeknisiData? = null
+    private lateinit var spinnerDaerahSemarang: Spinner
     private lateinit var spinnerNamaTeknisi: Spinner
 
     @SuppressLint("MissingInflatedId", "WrongViewCast")
@@ -71,54 +72,11 @@ class TambahTugasActivity : AppCompatActivity() {
 
         updateButtonState()
 
-        val spinnerDaerahSemarang: Spinner = findViewById(R.id.spinnerDaerahSemarang)
-
-// Ambil data daerah dari resources
-        val daerahSemarang = resources.getStringArray(R.array.daerah_semarang)
-
-// Buat adapter untuk Spinner
-        val adapterDaerah = ArrayAdapter(
-            this, // Context
-            android.R.layout.simple_spinner_item,
-            daerahSemarang // Data
-        )
-        adapterDaerah.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        // Set adapter ke Spinner
-        spinnerDaerahSemarang.adapter = adapterDaerah
-
-        // Ambil data dari intent
-        val daerahPengaduan = intent.getStringExtra("daerah_pengaduan") ?: "N/A"
-
-        // Cari posisi item dalam array
-        val selectedIndex = daerahSemarang.indexOf(daerahPengaduan)
-
-        // Jika ditemukan, set spinner ke posisi tersebut, jika tidak biarkan default
-        if (selectedIndex != -1) {
-            spinnerDaerahSemarang.setSelection(selectedIndex)
-        }
-
-        // Handle item yang dipilih
-        var selectedDaerah: String? = null
-        spinnerDaerahSemarang.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (position > 0) { // Abaikan placeholder jika ada
-                    selectedDaerah = daerahSemarang[position]
-                    updateButtonState()
-                    Log.d("Selected Spinner", "Teknisi yang dipilih: $selectedDaerah")
-                } else {
-                    selectedDaerah = null
-                    updateButtonState()
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Tidak ada yang dipilih
-            }
-        }
+        spinnerDaerahSemarang = findViewById(R.id.spinnerDaerahSemarang)
+        setupSpinnerDaerah(daerahPengaduan)
 
         spinnerNamaTeknisi = findViewById(R.id.spinnerNamaTeknisi)
-        loadTeknisiData()
+        setupSpinnerTeknisi()
 
         // Set nilai ke EditText
         etTanggalPengaduan.setText(formattedDate)
@@ -149,7 +107,40 @@ class TambahTugasActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadTeknisiData() {
+    private fun setupSpinnerDaerah(daerahPengaduan: String) {
+        val daerahSemarang = resources.getStringArray(R.array.daerah_semarang)
+
+        val adapterDaerah = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            daerahSemarang
+        )
+        adapterDaerah.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        spinnerDaerahSemarang.adapter = adapterDaerah
+
+        // Cari posisi item dalam array
+        val selectedIndex = daerahSemarang.indexOf(daerahPengaduan)
+
+        // Jika ditemukan, set spinner ke posisi tersebut
+        if (selectedIndex != -1) {
+            spinnerDaerahSemarang.setSelection(selectedIndex)
+        }
+
+        // Handle item yang dipilih
+        spinnerDaerahSemarang.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                selectedDaerah = if (position > 0) daerahSemarang[position] else null.toString()
+                Log.d("Selected Spinner", "Daerah yang dipilih: $selectedDaerah")
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Tidak ada yang dipilih
+            }
+        }
+    }
+
+    private fun setupSpinnerTeknisi() {
         RetrofitClient.instance.getTeknisi().enqueue(object : Callback<ApiResponse<List<TeknisiData>>> {
             override fun onResponse(
                 call: Call<ApiResponse<List<TeknisiData>>>,
@@ -169,6 +160,12 @@ class TambahTugasActivity : AppCompatActivity() {
                     adapterTeknisi.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     spinnerNamaTeknisi.adapter = adapterTeknisi
 
+                    // Cari posisi teknisi berdasarkan idTeknisi dari Intent
+                    val selectedIndex = teknisiList.indexOfFirst { it.idTeknisi == idTeknisi }
+                    if (selectedIndex != -1) {
+                        spinnerNamaTeknisi.setSelection(selectedIndex + 1) // +1 karena ada placeholder di indeks 0
+                    }
+
                     // Listener untuk menangani item yang dipilih
                     spinnerNamaTeknisi.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(
@@ -180,7 +177,7 @@ class TambahTugasActivity : AppCompatActivity() {
                             Log.d("Spinner", "Position selected: $position") // Debugging posisi yang dipilih
 
                             if (position > 0) { // Pastikan bukan "Pilih Teknisi"
-                                selectedTeknisi = teknisiList[position - 1]
+                                selectedTeknisi = teknisiList[position - 1] // -1 karena ada placeholder
                                 Log.d("Spinner", "Teknisi yang dipilih: ${selectedTeknisi?.namaTeknisi}")
                                 Log.d("Spinner", "ID Teknisi yang dipilih: ${selectedTeknisi?.idTeknisi}")
                             } else {
