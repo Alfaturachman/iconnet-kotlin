@@ -2,6 +2,7 @@ package com.example.iconnet.ui.admin.master_user
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +13,19 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iconnet.R
+import com.example.iconnet.api.ApiResponse
+import com.example.iconnet.api.RetrofitClient
 import com.example.iconnet.model.AllUser
+import com.example.iconnet.model.DeleteRequest
 import com.example.iconnet.ui.admin.master_user.edit.EditUserActivity
-import com.example.iconnet.ui.admin.tambah_tugas.TambahTugasActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class UserAdapter(
     private val userList: List<AllUser>,
-    private val startForResult: ActivityResultLauncher<Intent>
+    private val startForResult: ActivityResultLauncher<Intent>,
+    private val onUserDeleted: () -> Unit // Callback untuk refresh data
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -79,12 +86,25 @@ class UserAdapter(
             .setTitle("Konfirmasi Hapus")
             .setMessage("Apakah Anda yakin ingin menghapus akun ${user.namaInstansi} - ${user.roleName}?")
             .setPositiveButton("Hapus") { _, _ ->
-                // Lakukan aksi hapus di sini
-                Toast.makeText(context, "Hapus: ID ${user.id}\" / Nama ${user.namaInstansi}", Toast.LENGTH_SHORT).show()
-                // Implementasi penghapusan dari database bisa ditambahkan di sini
+                // Panggil API untuk menghapus user
+                RetrofitClient.instance.deleteUser(DeleteRequest(user.id)).enqueue(object : Callback<ApiResponse<DeleteRequest>> {
+                    override fun onResponse(call: Call<ApiResponse<DeleteRequest>>, response: Response<ApiResponse<DeleteRequest>>) {
+                        if (response.isSuccessful && response.body()?.status == true) {
+                            Toast.makeText(context, "User berhasil dihapus!", Toast.LENGTH_SHORT).show()
+                            onUserDeleted() // Panggil callback untuk refresh data
+                        } else {
+                            Log.e("API_ERROR", "Response Error: ${response.errorBody()?.string()}")
+                            Toast.makeText(context, "Gagal menghapus user!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ApiResponse<DeleteRequest>>, t: Throwable) {
+                        Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
             }
             .setNegativeButton("Batal") { dialog, _ ->
-                dialog.dismiss() // Tutup dialog jika dibatalkan
+                dialog.dismiss()
             }
             .show()
     }

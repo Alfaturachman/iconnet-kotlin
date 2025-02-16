@@ -3,6 +3,7 @@ package com.example.iconnet.api
 import com.example.iconnet.model.AllUser
 import com.example.iconnet.model.CreateUserRequest
 import com.example.iconnet.model.DashboardData
+import com.example.iconnet.model.DeleteRequest
 import com.example.iconnet.model.LoginRequest
 import com.example.iconnet.model.RegisterData
 import com.example.iconnet.model.RegisterRequest
@@ -59,4 +60,8 @@ interface ApiService {
 
     @POST("update_user.php")
     fun updateUser(@Body request: UpdateUserRequest): Call<ApiResponse<UpdateUserRequest>>
+
+    @Headers("Content-Type: application/json")
+    @POST("delete_user.php")
+    fun deleteUser(@Body request: DeleteRequest): Call<ApiResponse<DeleteRequest>>
 }

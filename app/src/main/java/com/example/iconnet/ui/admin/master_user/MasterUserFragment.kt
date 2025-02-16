@@ -61,7 +61,9 @@ class MasterUserFragment : Fragment() {
             ) {
                 if (response.isSuccessful && response.body()?.status == true) {
                     userList = response.body()?.data ?: listOf()
-                    userAdapter = UserAdapter(userList, startForResult)
+                    userAdapter = UserAdapter(userList, startForResult) {
+                        refreshData()
+                    }
                     recyclerView.adapter = userAdapter
                 } else {
                     Toast.makeText(requireContext(), "Gagal mengambil data", Toast.LENGTH_SHORT).show()
