@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iconnet.R
 import com.example.iconnet.model.AllUser
@@ -66,7 +67,17 @@ class UserAdapter(private val userList: List<AllUser>) : RecyclerView.Adapter<Us
 
     // Button Hapus
     private fun handleButtonHapus(user: AllUser, context: Context) {
-        Toast.makeText(context, "Menghapus: ${user.namaInstansi}", Toast.LENGTH_SHORT).show()
-        // Implementasi penghapusan bisa ditambahkan di sini
+        AlertDialog.Builder(context)
+            .setTitle("Konfirmasi Hapus")
+            .setMessage("Apakah Anda yakin ingin menghapus akun ${user.namaInstansi} - ${user.roleName}?")
+            .setPositiveButton("Hapus") { _, _ ->
+                // Lakukan aksi hapus di sini
+                Toast.makeText(context, "Menghapus: ${user.namaInstansi}", Toast.LENGTH_SHORT).show()
+                // Implementasi penghapusan dari database bisa ditambahkan di sini
+            }
+            .setNegativeButton("Batal") { dialog, _ ->
+                dialog.dismiss() // Tutup dialog jika dibatalkan
+            }
+            .show()
     }
 }
