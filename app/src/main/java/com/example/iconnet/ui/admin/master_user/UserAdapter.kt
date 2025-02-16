@@ -57,9 +57,13 @@ class UserAdapter(private val userList: List<AllUser>) : RecyclerView.Adapter<Us
     // Button Edit
     private fun handleButtonEditClick(user: AllUser, context: Context) {
         val intent = Intent(context, EditUserActivity::class.java).apply {
-            putExtra("nama", user.namaInstansi)
+            putExtra("id_user", user.id)
+            putExtra("nama_pelanggan", user.namaInstansi)
+            putExtra("alamat", user.alamat)
+            putExtra("nomor_hp", user.noHp)
             putExtra("email", user.email)
             putExtra("username", user.username)
+            putExtra("id_role", user.idRole)
             putExtra("role", user.roleName)
         }
         context.startActivity(intent)
@@ -72,7 +76,7 @@ class UserAdapter(private val userList: List<AllUser>) : RecyclerView.Adapter<Us
             .setMessage("Apakah Anda yakin ingin menghapus akun ${user.namaInstansi} - ${user.roleName}?")
             .setPositiveButton("Hapus") { _, _ ->
                 // Lakukan aksi hapus di sini
-                Toast.makeText(context, "Menghapus: ${user.namaInstansi}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Hapus: ID ${user.id}\" / Nama ${user.namaInstansi}", Toast.LENGTH_SHORT).show()
                 // Implementasi penghapusan dari database bisa ditambahkan di sini
             }
             .setNegativeButton("Batal") { dialog, _ ->

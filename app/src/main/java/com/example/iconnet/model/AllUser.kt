@@ -9,5 +9,6 @@ data class AllUser(
     @SerializedName("alamat") val alamat: String,
     @SerializedName("no_hp") val noHp: String,
     @SerializedName("username") val username: String,
+    @SerializedName("id_role") val idRole: Int,
     @SerializedName("role_name") val roleName: String
 )
