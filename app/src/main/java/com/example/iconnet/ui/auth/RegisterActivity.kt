@@ -1,10 +1,15 @@
 package com.example.iconnet.ui.auth
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -24,7 +29,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var etNamaInstansi: EditText
@@ -36,12 +40,15 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var btnRegister: Button
     private lateinit var tvLogin: TextView
 
-    private lateinit var apiService: ApiService
-
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_register)
+
+        // Set status bar color and light icons
+        window.statusBarColor = resources.getColor(R.color.white, theme)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         etNamaInstansi = findViewById(R.id.etNamaInstansi)
         etAlamat = findViewById(R.id.etAlamat)
@@ -58,6 +65,27 @@ class RegisterActivity : AppCompatActivity() {
         if (userId != -1) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
+        }
+
+        var isPasswordVisible = false
+        etPassword.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val drawableEnd = etPassword.compoundDrawablesRelative[2] // Ambil drawableEnd
+                if (drawableEnd != null && event.rawX >= (etPassword.right - drawableEnd.bounds.width())) {
+                    isPasswordVisible = !isPasswordVisible
+                    if (isPasswordVisible) {
+                        etPassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                        etPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_pass_eye, 0)
+                    } else {
+                        etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                        etPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_pass_eye_off, 0)
+                    }
+                    etPassword.typeface = Typeface.DEFAULT // **Menjaga font tetap Roboto**
+                    etPassword.setSelection(etPassword.text.length) // Menjaga posisi kursor
+                    return@setOnTouchListener true
+                }
+            }
+            false
         }
 
         tvLogin.setOnClickListener {
