@@ -17,8 +17,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.iconnet.R
 import com.example.iconnet.api.ApiResponse
+import com.example.iconnet.api.ApiService
 import com.example.iconnet.api.RetrofitClient
+import com.example.iconnet.model.CreateUserRequest
 import com.example.iconnet.model.RoleData
+import com.example.iconnet.model.UpdateUserRequest
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,7 +50,7 @@ class EditUserActivity : AppCompatActivity() {
         }
 
         val idUser = intent.getIntExtra("id_user", 0)
-        val namaPelanggan = intent.getStringExtra("nama_pelanggan")
+        val nama = intent.getStringExtra("nama_pelanggan")
         val alamat = intent.getStringExtra("alamat")
         val nomorHp = intent.getStringExtra("nomor_hp")
         val email = intent.getStringExtra("email")
@@ -59,9 +62,10 @@ class EditUserActivity : AppCompatActivity() {
         val etNomorHp = findViewById<EditText>(R.id.etNomorHp)
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etUsername = findViewById<EditText>(R.id.etUsername)
+        val etPassword = findViewById<EditText>(R.id.etPassword)
 
         // Set nilai EditText
-        etNama.setText(namaPelanggan)
+        etNama.setText(nama)
         etAlamat.setText(alamat)
         etNomorHp.setText(nomorHp)
         etEmail.setText(email)
@@ -74,16 +78,40 @@ class EditUserActivity : AppCompatActivity() {
         // Button Update
         val btnUpdateUser: Button = findViewById(R.id.btnUpdateUser)
         btnUpdateUser.setOnClickListener {
+            val idUser = intent.getIntExtra("id_user", 0)
+            val newPassword = etPassword.text.toString()
 
-            Log.d("EditUserActivity", "ID User: $idUser")
-            Log.d("EditUserActivity", "Nama Pelanggan: $namaPelanggan")
-            Log.d("EditUserActivity", "Alamat: $alamat")
-            Log.d("EditUserActivity", "Nomor HP: $nomorHp")
-            Log.d("EditUserActivity", "Email: $email")
-            Log.d("EditUserActivity", "Username: $username")
-            Log.d("EditUserActivity", "ID Role: $idRole")
+            val updateRequest = UpdateUserRequest(
+                id = idUser,
+                nama_instansi = etNama.text.toString(),
+                email = etEmail.text.toString(),
+                alamat = etAlamat.text.toString(),
+                no_hp = etNomorHp.text.toString(),
+                username = etUsername.text.toString(),
+                password = if (newPassword.isNotEmpty()) newPassword else null,  // Abaikan jika kosong
+                role_id = idRole
+            )
 
-            Toast.makeText(this@EditUserActivity, "Update user berhasil", Toast.LENGTH_SHORT).show()
+            RetrofitClient.instance.updateUser(updateRequest).enqueue(object : Callback<ApiResponse<UpdateUserRequest>> {
+                override fun onResponse(call: Call<ApiResponse<UpdateUserRequest>>, response: Response<ApiResponse<UpdateUserRequest>>) {
+                    if (response.isSuccessful) {
+                        val apiResponse = response.body()
+                        if (apiResponse != null && apiResponse.status) {
+                            Toast.makeText(this@EditUserActivity, "User berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+                            setResult(RESULT_OK)
+                            finish()
+                        } else {
+                            Toast.makeText(this@EditUserActivity, apiResponse?.message ?: "Gagal memperbarui user", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this@EditUserActivity, "Gagal menghubungi server!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<UpdateUserRequest>>, t: Throwable) {
+                    Toast.makeText(this@EditUserActivity, "Terjadi kesalahan: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 

@@ -12,6 +12,7 @@ import com.example.iconnet.model.RoleData
 import com.example.iconnet.model.TeknisiData
 import com.example.iconnet.model.TotalStatsAdmin
 import com.example.iconnet.model.UpdatePengaduanRequest
+import com.example.iconnet.model.UpdateUserRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -55,4 +56,7 @@ interface ApiService {
 
     @POST("post_user.php")
     fun tambahUser(@Body request: CreateUserRequest): Call<ApiResponse<CreateUserRequest>>
+
+    @POST("update_user.php")
+    fun updateUser(@Body request: UpdateUserRequest): Call<ApiResponse<UpdateUserRequest>>
 }
