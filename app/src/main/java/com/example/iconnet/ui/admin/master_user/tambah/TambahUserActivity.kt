@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.iconnet.R
 import com.example.iconnet.api.ApiResponse
 import com.example.iconnet.api.RetrofitClient
+import com.example.iconnet.model.CreateUserRequest
 import com.example.iconnet.model.RoleData
 import retrofit2.Call
 import retrofit2.Callback
@@ -90,54 +91,64 @@ class TambahUserActivity : AppCompatActivity() {
             val username = etUsername.text.toString().trim()
             val password = etPassword.text.toString().trim()
 
-            // Cek apakah ada yang kosong
-            if (TextUtils.isEmpty(nama)) {
+            // Validasi input
+            if (nama.isEmpty()) {
                 etNama.error = "Nama tidak boleh kosong"
                 etNama.requestFocus()
                 return@setOnClickListener
             }
-            if (TextUtils.isEmpty(alamat)) {
+            if (alamat.isEmpty()) {
                 etAlamat.error = "Alamat tidak boleh kosong"
                 etAlamat.requestFocus()
                 return@setOnClickListener
             }
-            if (TextUtils.isEmpty(nomorHp)) {
+            if (nomorHp.isEmpty()) {
                 etNomorHp.error = "Nomor HP tidak boleh kosong"
                 etNomorHp.requestFocus()
                 return@setOnClickListener
             }
-            if (TextUtils.isEmpty(email)) {
+            if (email.isEmpty()) {
                 etEmail.error = "Email tidak boleh kosong"
                 etEmail.requestFocus()
                 return@setOnClickListener
             }
-            if (TextUtils.isEmpty(username)) {
+            if (username.isEmpty()) {
                 etUsername.error = "Username tidak boleh kosong"
                 etUsername.requestFocus()
                 return@setOnClickListener
             }
-            if (TextUtils.isEmpty(password)) {
+            if (password.isEmpty()) {
                 etPassword.error = "Password tidak boleh kosong"
                 etPassword.requestFocus()
                 return@setOnClickListener
             }
-
-            // Cek role default ("Pilih Role")
             if (selectedRoleValue == -1) {
-                Toast.makeText(this@TambahUserActivity, "Silakan pilih role terlebih dahulu", Toast.LENGTH_SHORT).show()
-                spinnerRole.requestFocus()
+                Toast.makeText(this, "Silakan pilih role terlebih dahulu", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            Log.d("TambahUser", "Nama: $nama")
-            Log.d("TambahUser", "Alamat: $alamat")
-            Log.d("TambahUser", "Nomor HP: $nomorHp")
-            Log.d("TambahUser", "Email: $email")
-            Log.d("TambahUser", "Username: $username")
-            Log.d("TambahUser", "Password: $password")
-            Log.d("TambahUser", "ID Role: $selectedRoleValue")
+            val request = CreateUserRequest(nama, email, alamat, nomorHp, username, password, selectedRoleValue)
 
-            Toast.makeText(this@TambahUserActivity, "Simpan user berhasil", Toast.LENGTH_SHORT).show()
+            RetrofitClient.instance.tambahUser(request).enqueue(object : Callback<ApiResponse<CreateUserRequest>> {
+                override fun onResponse(call: Call<ApiResponse<CreateUserRequest>>, response: Response<ApiResponse<CreateUserRequest>>) {
+                    if (response.isSuccessful) {
+                        val apiResponse = response.body()
+                        if (apiResponse != null && apiResponse.status) {
+                            Toast.makeText(this@TambahUserActivity, "User berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+                            setResult(RESULT_OK)
+                            finish()
+                        } else {
+                            Toast.makeText(this@TambahUserActivity, apiResponse?.message ?: "Gagal menambahkan user", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this@TambahUserActivity, "Gagal menghubungi server!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<CreateUserRequest>>, t: Throwable) {
+                    Toast.makeText(this@TambahUserActivity, "Terjadi kesalahan: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.iconnet.ui.admin.master_user
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +27,13 @@ class MasterUserFragment : Fragment() {
     private lateinit var userAdapter: UserAdapter
     private var userList: List<AllUser> = listOf()
 
+    // ActivityResultLauncher
+    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            refreshData()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,7 +46,7 @@ class MasterUserFragment : Fragment() {
         val btnTambahUser: Button = view.findViewById(R.id.btnTambahUser)
         btnTambahUser.setOnClickListener {
             val intent = Intent(requireContext(), TambahUserActivity::class.java)
-            startActivity(intent)
+            startForResult.launch(intent)
         }
 
         fetchUsers()
@@ -52,7 +61,7 @@ class MasterUserFragment : Fragment() {
             ) {
                 if (response.isSuccessful && response.body()?.status == true) {
                     userList = response.body()?.data ?: listOf()
-                    userAdapter = UserAdapter(userList)
+                    userAdapter = UserAdapter(userList, startForResult)
                     recyclerView.adapter = userAdapter
                 } else {
                     Toast.makeText(requireContext(), "Gagal mengambil data", Toast.LENGTH_SHORT).show()
@@ -63,5 +72,9 @@ class MasterUserFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun refreshData() {
+        fetchUsers()
     }
 }

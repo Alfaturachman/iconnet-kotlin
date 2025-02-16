@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iconnet.R
@@ -15,7 +16,10 @@ import com.example.iconnet.model.AllUser
 import com.example.iconnet.ui.admin.master_user.edit.EditUserActivity
 import com.example.iconnet.ui.admin.tambah_tugas.TambahTugasActivity
 
-class UserAdapter(private val userList: List<AllUser>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter(
+    private val userList: List<AllUser>,
+    private val startForResult: ActivityResultLauncher<Intent>
+) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val namaInstansi: TextView = view.findViewById(R.id.tvNama)
@@ -66,7 +70,7 @@ class UserAdapter(private val userList: List<AllUser>) : RecyclerView.Adapter<Us
             putExtra("id_role", user.idRole)
             putExtra("role", user.roleName)
         }
-        context.startActivity(intent)
+        startForResult.launch(intent)
     }
 
     // Button Hapus

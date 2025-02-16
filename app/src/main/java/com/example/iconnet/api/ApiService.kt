@@ -1,6 +1,7 @@
 package com.example.iconnet.api
 
 import com.example.iconnet.model.AllUser
+import com.example.iconnet.model.CreateUserRequest
 import com.example.iconnet.model.DashboardData
 import com.example.iconnet.model.LoginRequest
 import com.example.iconnet.model.RegisterData
@@ -51,4 +52,7 @@ interface ApiService {
 
     @GET("get_role.php")
     fun getRoles(): Call<ApiResponse<List<RoleData>>>
+
+    @POST("post_user.php")
+    fun tambahUser(@Body request: CreateUserRequest): Call<ApiResponse<CreateUserRequest>>
 }
