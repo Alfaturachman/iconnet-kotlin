@@ -18,6 +18,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.user.detail.DetailPengaduanActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.user.tambah.TambahPengaduanActivity"
             android:exported="false" />
         <activity

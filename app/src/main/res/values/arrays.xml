@@ -24,10 +24,11 @@
     </string-array>
 
     <string-array name="judul_keluhan_array">
-        <item>Gangguan Internet</item>
-        <item>Kecepatan Lambat</item>
-        <item>Jaringan Putus-Putus</item>
-        <item>Pemasangan Baru</item>
-        <item>Layanan Pelanggan</item>
+        <item>Keluhan Koneksi WiFi yang Tidak Stabil dan Sering Putus</item>
+        <item>Kekecewaan atas Kecepatan WiFi yang Lambat</item>
+        <item>Kesulitan Mengakses Internet Akibat Koneksi WiFi yang Tidak Stabil</item>
+        <item>Masalah WiFi Lemah di Area Tertentu</item>
+        <item>Kecepatan internet yang saya dapatkan jauh lebih lambat</item>
+        <item>Router WiFi saya sering error dan harus di-restart berkali-kali</item>
     </string-array>
 </resources>

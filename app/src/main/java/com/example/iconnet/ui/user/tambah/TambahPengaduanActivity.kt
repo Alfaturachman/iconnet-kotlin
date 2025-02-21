@@ -1,6 +1,7 @@
 package com.example.iconnet.ui.user.tambah
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +11,7 @@ import com.example.iconnet.R
 import com.example.iconnet.api.ApiResponse
 import com.example.iconnet.api.RetrofitClient
 import com.example.iconnet.model.PengaduanRequest
+import com.example.iconnet.ui.success.SuccessActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,8 +83,6 @@ class TambahPengaduanActivity : AppCompatActivity() {
             Log.d("TambahPengaduan", "Nomor HP: $nomorHp")
 
             simpanPengaduan(judulKeluhan, isiPengaduan, alamat, nomorHp)
-
-            Toast.makeText(this, "Pengaduan berhasil disimpan", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -100,9 +100,19 @@ class TambahPengaduanActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val result = response.body()
                     if (result != null && result.status) {
-                        Toast.makeText(this@TambahPengaduanActivity, "Pengaduan berhasil dikirim!", Toast.LENGTH_SHORT).show()
-                        setResult(RESULT_OK)
-                        finish()
+                        Toast.makeText(this@TambahPengaduanActivity, "Pengaduan berhasil disimpan!", Toast.LENGTH_SHORT).show()
+
+                        // Kirim data ke aktivitas lain menggunakan Intent
+                        val intent = Intent(this@TambahPengaduanActivity, SuccessActivity::class.java).apply {
+                            putExtra("judul_pengaduan", request.judul_pengaduan)
+                            putExtra("isi_pengaduan", request.isi_pengaduan)
+                            putExtra("alamat_pengaduan", request.alamat_pengaduan)
+                            putExtra("no_telp_pengaduan", request.no_telp_pengaduan)
+                        }
+
+                        setResult(RESULT_OK, intent)
+                        startActivity(intent)
+                        finish() // Tutup aktivitas ini setelah berhasil
                     } else {
                         Toast.makeText(this@TambahPengaduanActivity, "Gagal menyimpan pengaduan!", Toast.LENGTH_SHORT).show()
                     }
