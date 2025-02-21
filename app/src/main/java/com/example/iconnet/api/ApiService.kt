@@ -9,6 +9,7 @@ import com.example.iconnet.model.RegisterData
 import com.example.iconnet.model.RegisterRequest
 import com.example.iconnet.model.LoginData
 import com.example.iconnet.model.Pengaduan
+import com.example.iconnet.model.PengaduanRequest
 import com.example.iconnet.model.RoleData
 import com.example.iconnet.model.TeknisiData
 import com.example.iconnet.model.TotalStatsAdmin
@@ -64,4 +65,8 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("delete_user.php")
     fun deleteUser(@Body request: DeleteRequest): Call<ApiResponse<DeleteRequest>>
+
+    // USER
+    @POST("post_pengaduan_user.php")
+    fun tambahPengaduan(@Body request: PengaduanRequest): Call<ApiResponse<PengaduanRequest>>
 }

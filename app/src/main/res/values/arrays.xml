@@ -22,4 +22,12 @@
         <item>Teknisi</item>
         <item>User</item>
     </string-array>
+
+    <string-array name="judul_keluhan_array">
+        <item>Gangguan Internet</item>
+        <item>Kecepatan Lambat</item>
+        <item>Jaringan Putus-Putus</item>
+        <item>Pemasangan Baru</item>
+        <item>Layanan Pelanggan</item>
+    </string-array>
 </resources>

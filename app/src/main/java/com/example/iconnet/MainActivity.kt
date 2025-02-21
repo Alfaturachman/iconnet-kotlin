@@ -62,13 +62,21 @@ class MainActivity : AppCompatActivity() {
         // Sembunyikan semua menu terlebih dahulu
         menu.findItem(R.id.nav_user)?.isVisible = false
         menu.findItem(R.id.nav_admin)?.isVisible = false
+        menu.findItem(R.id.nav_master_user)?.isVisible = false
         menu.findItem(R.id.nav_teknisi)?.isVisible = false
 
         // Tampilkan menu sesuai dengan role
         when (role) {
-            "Admin" -> menu.findItem(R.id.nav_admin)?.isVisible = true
-            "User" -> menu.findItem(R.id.nav_user)?.isVisible = true
-            "Teknisi" -> menu.findItem(R.id.nav_teknisi)?.isVisible = true
+            "Admin" -> {
+                menu.findItem(R.id.nav_admin)?.isVisible = true
+                menu.findItem(R.id.nav_master_user)?.isVisible = true
+            }
+            "User" -> {
+                menu.findItem(R.id.nav_user)?.isVisible = true
+            }
+            "Teknisi" -> {
+                menu.findItem(R.id.nav_teknisi)?.isVisible = true
+            }
         }
     }
 
