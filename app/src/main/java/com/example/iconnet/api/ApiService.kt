@@ -12,7 +12,7 @@ import com.example.iconnet.model.Pengaduan
 import com.example.iconnet.model.PengaduanRequest
 import com.example.iconnet.model.RoleData
 import com.example.iconnet.model.TeknisiData
-import com.example.iconnet.model.TotalStatsAdmin
+import com.example.iconnet.model.TotalStatsResponse
 import com.example.iconnet.model.UpdatePengaduanRequest
 import com.example.iconnet.model.UpdateUserRequest
 import retrofit2.Call
@@ -38,10 +38,18 @@ interface ApiService {
     fun getTugasTeknisi(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<Pengaduan>>>
 
     @GET("get_dashboard_admin.php")
-    fun getDashboardData(): Call<ApiResponse<DashboardData>>
+    fun getRekapDataPengaduanAdmin(): Call<ApiResponse<DashboardData>>
+
+    @Headers("Content-Type: application/json")
+    @POST("get_dashboard_user.php")
+    fun getRekapDataPengaduanUser(@Body request: Map<String, Int>): Call<ApiResponse<DashboardData>>
 
     @GET("get_stats_admin.php")
-    fun getPengaduanData(): Call<ApiResponse<List<TotalStatsAdmin>>>
+    fun getStatsPengaduanAdmin(): Call<ApiResponse<List<TotalStatsResponse>>>
+
+    @Headers("Content-Type: application/json")
+    @POST("get_stats_user.php")
+    fun getStatsPengaduanUser(@Body request: Map<String, Int>): Call<ApiResponse<List<TotalStatsResponse>>>
 
     @GET("get_all_teknisi.php")
     fun getTeknisi(): Call<ApiResponse<List<TeknisiData>>>

@@ -2,7 +2,7 @@ package com.example.iconnet.model
 
 import com.google.gson.annotations.SerializedName
 
-data class TotalStatsAdmin(
+data class TotalStatsResponse(
     @SerializedName("tahun")
     val tahun: Int,
 
