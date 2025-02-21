@@ -31,7 +31,7 @@ interface ApiService {
     @GET("get_all_pengaduan.php")
     fun getPengaduan(): Call<ApiResponse<List<Pengaduan>>>
 
-    @POST("get_pengaduan_by_id.php")
+    @POST("get_pengaduan_id_user.php")
     fun getPengaduan(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<Pengaduan>>>
 
     @POST("get_tugas_teknisi.php")
@@ -69,4 +69,8 @@ interface ApiService {
     // USER
     @POST("post_pengaduan_user.php")
     fun tambahPengaduan(@Body request: PengaduanRequest): Call<ApiResponse<PengaduanRequest>>
+
+    @Headers("Content-Type: application/json")
+    @POST("get_pengaduan_id_pengaduan.php")
+    fun getPengaduanByIdPengaduan(@Body request: Map<String, Int>): Call<ApiResponse<Pengaduan>>
 }

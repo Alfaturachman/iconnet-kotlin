@@ -61,7 +61,7 @@ class PengaduanAdapter(
 
         // Handle klik pada tombol detail
         holder.btnDetail.setOnClickListener {
-            handleAmbilClick(pengaduan, context)
+            handleDetailClick(pengaduan, context)
         }
     }
 
@@ -79,7 +79,7 @@ class PengaduanAdapter(
     }
 
     // Fungsi untuk menangani klik tombol detail
-    private fun handleAmbilClick(pengaduan: Pengaduan, context: android.content.Context) {
+    private fun handleDetailClick(pengaduan: Pengaduan, context: android.content.Context) {
         val intent = Intent(context, TambahTugasActivity::class.java).apply {
             putExtra("id_pengaduan", pengaduan.idPengaduan?.toIntOrNull() ?: -1)
             putExtra("tanggal_pengaduan", pengaduan.tglPengaduan)

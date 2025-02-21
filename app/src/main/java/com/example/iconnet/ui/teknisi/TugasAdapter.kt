@@ -11,7 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.iconnet.R
 import com.example.iconnet.model.Pengaduan
 
-class TugasAdapter(private val context: Context, private val pengaduanList: List<Pengaduan>) :
+class TugasAdapter(
+    private val context: Context,
+    private val pengaduanList: List<Pengaduan>
+
+) :
     RecyclerView.Adapter<TugasAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

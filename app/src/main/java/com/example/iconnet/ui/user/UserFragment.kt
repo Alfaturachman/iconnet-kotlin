@@ -91,7 +91,7 @@ class UserFragment : Fragment() {
                             // Jika ada data, tampilkan RecyclerView & sembunyikan cardViewAlert
                             binding.recyclerViewPengaduanUser.apply {
                                 layoutManager = LinearLayoutManager(requireContext())
-                                adapter = PengaduanAdapter(requireContext(), pengaduanList)
+                                adapter = PengaduanAdapter(requireContext(), pengaduanList, startForResult)
                                 visibility = View.VISIBLE
                             }
                             binding.cardViewAlert.visibility = View.GONE

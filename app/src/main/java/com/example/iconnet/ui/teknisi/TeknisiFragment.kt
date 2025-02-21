@@ -1,5 +1,6 @@
 package com.example.iconnet.ui.teknisi
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +26,14 @@ class TeknisiFragment : Fragment() {
 
     private lateinit var binding: FragmentTeknisiBinding
     private lateinit var apiService: ApiService
+    private var userId: Int = -1
+
+    // ActivityResultLauncher
+    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            refreshData()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +50,7 @@ class TeknisiFragment : Fragment() {
 
         // Ambil user_id dari SharedPreferences
         val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        val userId = sharedPreferences.getInt("id_user", -1)
+        userId = sharedPreferences.getInt("id_user", -1)
 
         if (userId != -1) {
             loadPengaduanData(userId)
@@ -69,7 +79,7 @@ class TeknisiFragment : Fragment() {
 
                         binding.recyclerViewPengaduanTeknisi.apply {
                             layoutManager = LinearLayoutManager(requireContext())
-                            adapter = PengaduanAdapter(requireContext(), pengaduanList)
+                            adapter = PengaduanAdapter(requireContext(), pengaduanList, startForResult)
                         }
                     } else {
                         Log.w("UserFragment", "Response tidak sukses: ${response.body()?.message}")
@@ -86,5 +96,9 @@ class TeknisiFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun refreshData() {
+        loadPengaduanData(userId)
     }
 }
