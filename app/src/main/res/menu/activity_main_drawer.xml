@@ -6,24 +6,24 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_home"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_admin"
-            android:icon="@drawable/ic_profile"
-            android:title="@string/menu_admin" />
+            android:icon="@drawable/ic_doc_on_clipboard"
+            android:title="@string/menu_pengaduan" />
         <item
             android:id="@+id/nav_master_user"
             android:icon="@drawable/ic_profile"
             android:title="@string/menu_user" />
         <item
-            android:id="@+id/nav_user"
-            android:icon="@drawable/ic_profile"
-            android:title="@string/menu_user" />
-        <item
             android:id="@+id/nav_teknisi"
-            android:icon="@drawable/ic_profile"
-            android:title="@string/menu_teknisi" />
+            android:icon="@drawable/ic_assignment_late"
+            android:title="@string/menu_tugas" />
+        <item
+            android:id="@+id/nav_user"
+            android:icon="@drawable/ic_doc_on_clipboard"
+            android:title="@string/menu_pengaduan" />
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_logout"

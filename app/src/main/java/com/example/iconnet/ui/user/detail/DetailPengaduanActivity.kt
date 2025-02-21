@@ -1,5 +1,6 @@
 package com.example.iconnet.ui.user.detail
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -22,6 +23,7 @@ class DetailPengaduanActivity : AppCompatActivity() {
     private lateinit var etIsiPengaduan: TextView
     private lateinit var etAlamat: TextView
     private lateinit var etStatus: TextView
+    private var userNama: String = "0"
 
     private var idPengaduan: Int = -1
 
@@ -32,6 +34,9 @@ class DetailPengaduanActivity : AppCompatActivity() {
         // Set status bar color
         window.statusBarColor = resources.getColor(R.color.white, theme)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        val sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        userNama = sharedPreferences.getString("nama", null).toString()
 
         // Inisialisasi UI
         etTanggalPengaduan = findViewById(R.id.etTanggalPengaduan)
@@ -68,7 +73,7 @@ class DetailPengaduanActivity : AppCompatActivity() {
                     pengaduan?.let {
                         etTanggalPengaduan.text = it.tglPengaduan
                         etIdPelanggan.text = it.idPelanggan
-                        etNamaPelanggan.text = it.namaUser ?: "Tidak Diketahui"
+                        etNamaPelanggan.text = userNama ?: "Tidak Diketahui"
                         etJudulPengaduan.text = it.judulPengaduan
                         etIsiPengaduan.text = it.isiPengaduan
                         etAlamat.text = it.alamatPengaduan ?: "Tidak Tersedia"
