@@ -79,7 +79,7 @@ class TeknisiFragment : Fragment() {
 
                         binding.recyclerViewPengaduanTeknisi.apply {
                             layoutManager = LinearLayoutManager(requireContext())
-                            adapter = PengaduanAdapter(requireContext(), pengaduanList, startForResult)
+                            adapter = TugasAdapter(requireContext(), pengaduanList, startForResult)
                         }
                     } else {
                         Log.w("UserFragment", "Response tidak sukses: ${response.body()?.message}")
