@@ -88,7 +88,7 @@ interface ApiService {
     fun getTugasTeknisi(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<Pengaduan>>>
 
     @Multipart
-    @POST("upload_tugas.php")
+    @POST("post_tugas_teknisi.php")
     fun uploadTugas(
         @Part("id_pengaduan") idPengaduan: RequestBody,
         @Part("keterangan") keterangan: RequestBody,

@@ -1,11 +1,13 @@
 package com.example.iconnet.ui.teknisi.detail
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
@@ -121,15 +123,33 @@ class DetailTugasActivity : AppCompatActivity() {
             Log.d("DetailTugasActivity", "Status: $statusPosition")
             Log.d("DetailTugasActivity", "Keterangan: $keterangan")
 
-            Toast.makeText(this, "Berhasil Simpan Tugas", Toast.LENGTH_SHORT).show()
-
             if (selectedFileUri == null) {
                 Toast.makeText(this, "Pilih file terlebih dahulu", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Konversi URI ke file
-            val file = File(selectedFileUri!!.path!!)
+            // Gunakan ContentResolver untuk membuka file dari URI
+            val contentResolver = applicationContext.contentResolver
+            val mimeType = contentResolver.getType(selectedFileUri!!)
+            val extension = when (mimeType) {
+                "image/jpeg" -> ".jpg"
+                "image/png" -> ".png"
+                "application/pdf" -> ".pdf"
+                else -> ".tmp"
+            }
+            val file = File(cacheDir, "temp_file$extension") // Tambahkan ekstensi
+            val inputStream = contentResolver.openInputStream(selectedFileUri!!)
+            if (inputStream == null) {
+                Toast.makeText(this, "File tidak dapat dibuka", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            inputStream.use { input ->
+                file.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+
             val requestFile = MultipartBody.Part.createFormData(
                 "file_pengaduan",
                 file.name,
@@ -144,45 +164,53 @@ class DetailTugasActivity : AppCompatActivity() {
             // Panggil API
             RetrofitClient.instance.uploadTugas(idPengaduanBody, keteranganBody, statusBody, requestFile)
                 .enqueue(object : Callback<ApiResponse<UploadTugasRequest>> {
+                    @SuppressLint("UnsafeIntentLaunch")
                     override fun onResponse(
                         call: Call<ApiResponse<UploadTugasRequest>>,
                         response: Response<ApiResponse<UploadTugasRequest>>
                     ) {
+                        Log.d("DetailTugasActivity", "Response received: $response")
+
                         if (response.isSuccessful) {
                             val uploadResponse = response.body()
+                            Log.d("DetailTugasActivity", "Response body: $uploadResponse")
+
                             if (uploadResponse?.status == true) {
-                                Toast.makeText(
-                                    this@DetailTugasActivity,
-                                    "Berhasil menyimpan tugas",
-                                    Toast.LENGTH_SHORT
-                                ).show()
                                 Log.d("DetailTugasActivity", "Data: ${uploadResponse.data}")
+                                Toast.makeText(this@DetailTugasActivity, "Berhasil menyimpan tugas", Toast.LENGTH_SHORT).show()
+                                setResult(RESULT_OK, intent)
+                                startActivity(intent)
+                                finish()
                             } else {
-                                Toast.makeText(
-                                    this@DetailTugasActivity,
-                                    uploadResponse?.message ?: "Gagal menyimpan tugas",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast.makeText(this@DetailTugasActivity, uploadResponse?.message ?: "Gagal menyimpan tugas", Toast.LENGTH_SHORT).show()
+                                Log.e("DetailTugasActivity", "Upload gagal: ${uploadResponse?.message}")
                             }
                         } else {
-                            Toast.makeText(
-                                this@DetailTugasActivity,
-                                "Gagal menyimpan tugas: ${response.message()}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val errorBody = response.errorBody()?.string()
+                            Toast.makeText(this@DetailTugasActivity, "Gagal menyimpan tugas: ${response.message()}", Toast.LENGTH_SHORT).show()
+                            Log.e("DetailTugasActivity", "Error response: ${response.message()}, Body: $errorBody")
                         }
                     }
 
                     override fun onFailure(call: Call<ApiResponse<UploadTugasRequest>>, t: Throwable) {
-                        Toast.makeText(
-                            this@DetailTugasActivity,
-                            "Gagal menyimpan tugas: ${t.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.e("DetailTugasActivity", "Error: ${t.message}", t)
+                        Toast.makeText(this@DetailTugasActivity, "Gagal menyimpan tugas: ${t.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("DetailTugasActivity", "Request failed: ${t.message}", t)
                     }
                 })
         }
+    }
+
+    private fun getRealPathFromURI(uri: Uri): String? {
+        var filePath: String? = null
+        contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val index = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
+                if (index != -1) {
+                    filePath = cursor.getString(index)
+                }
+            }
+        }
+        return filePath
     }
 
     private fun setupSpinner() {
