@@ -178,8 +178,7 @@ class DetailTugasActivity : AppCompatActivity() {
                             if (uploadResponse?.status == true) {
                                 Log.d("DetailTugasActivity", "Data: ${uploadResponse.data}")
                                 Toast.makeText(this@DetailTugasActivity, "Berhasil menyimpan tugas", Toast.LENGTH_SHORT).show()
-                                setResult(RESULT_OK, intent)
-                                startActivity(intent)
+                                setResult(RESULT_OK)
                                 finish()
                             } else {
                                 Toast.makeText(this@DetailTugasActivity, uploadResponse?.message ?: "Gagal menyimpan tugas", Toast.LENGTH_SHORT).show()

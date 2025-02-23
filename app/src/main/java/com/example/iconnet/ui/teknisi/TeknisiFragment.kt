@@ -70,30 +70,46 @@ class TeknisiFragment : Fragment() {
                 call: Call<ApiResponse<List<Pengaduan>>>,
                 response: Response<ApiResponse<List<Pengaduan>>>
             ) {
-                if (response.isSuccessful) {
-                    Log.d("UserFragment", "Response sukses: ${response.body()}")
+                Log.d("UserFragment", "Response diterima, kode: ${response.code()}")
 
-                    if (response.body()?.status == true) {
-                        val pengaduanList = response.body()?.data ?: emptyList()
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    Log.d("UserFragment", "Response body: $responseBody")
+
+                    if (responseBody?.status == true) {
+                        val pengaduanList = responseBody.data ?: emptyList()
                         Log.d("UserFragment", "Jumlah data pengaduan: ${pengaduanList.size}")
 
-                        binding.recyclerViewPengaduanTeknisi.apply {
-                            layoutManager = LinearLayoutManager(requireContext())
-                            adapter = TugasAdapter(requireContext(), pengaduanList, startForResult)
+                        if (pengaduanList.isNotEmpty()) {
+                            // Jika ada data, tampilkan RecyclerView & sembunyikan cardViewAlert
+                            binding.recyclerViewPengaduanTeknisi.apply {
+                                layoutManager = LinearLayoutManager(requireContext())
+                                adapter = TugasAdapter(requireContext(), pengaduanList, startForResult)
+                                visibility = View.VISIBLE
+                            }
+                            binding.cardViewAlert.visibility = View.GONE
+                        } else {
+                            // Jika tidak ada data, tampilkan cardViewAlert & sembunyikan RecyclerView
+                            binding.recyclerViewPengaduanTeknisi.visibility = View.GONE
+                            binding.cardViewAlert.visibility = View.VISIBLE
                         }
                     } else {
-                        Log.w("UserFragment", "Response tidak sukses: ${response.body()?.message}")
-                        Toast.makeText(requireContext(), "Gagal mengambil data: ${response.body()?.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("UserFragment", "Gagal mengambil data, status response false")
+                        binding.recyclerViewPengaduanTeknisi.visibility = View.GONE
+                        binding.cardViewAlert.visibility = View.VISIBLE
                     }
                 } else {
-                    Log.e("UserFragment", "Response gagal dengan kode: ${response.code()} dan body: ${response.errorBody()?.string()}")
-                    Toast.makeText(requireContext(), "Gagal mengambil data", Toast.LENGTH_SHORT).show()
+                    Log.e("UserFragment", "Response tidak berhasil, kode: ${response.code()}")
+                    binding.recyclerViewPengaduanTeknisi.visibility = View.GONE
+                    binding.cardViewAlert.visibility = View.VISIBLE
                 }
             }
 
             override fun onFailure(call: Call<ApiResponse<List<Pengaduan>>>, t: Throwable) {
-                Log.e("UserFragment", "Error saat mengambil data: ${t.message}", t)
+                Log.e("UserFragment", "Error saat memuat data: ${t.message}", t)
                 Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                binding.recyclerViewPengaduanTeknisi.visibility = View.GONE
+                binding.cardViewAlert.visibility = View.VISIBLE
             }
         })
     }
