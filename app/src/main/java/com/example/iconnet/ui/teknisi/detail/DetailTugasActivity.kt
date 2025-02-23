@@ -21,6 +21,18 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iconnet.R
+import com.example.iconnet.api.ApiResponse
+import com.example.iconnet.api.ApiService
+import com.example.iconnet.api.RetrofitClient
+import com.example.iconnet.model.UploadTugasRequest
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class DetailTugasActivity : AppCompatActivity() {
 
@@ -101,26 +113,77 @@ class DetailTugasActivity : AppCompatActivity() {
 
     private fun setupButtonSimpan() {
         btnSimpan.setOnClickListener {
-            val statusPosition = spinnerStatus.selectedItemPosition // Ambil angka status (0,1,2,3)
-            val statusName = spinnerStatus.selectedItem.toString() // Ambil nama status
-            val keterangan = etKeterangan.text.toString().trim() // Ambil teks keterangan
+            val idPengaduan = idPengaduan
+            val keterangan = etKeterangan.text.toString().trim()
+            val statusPosition = spinnerStatus.selectedItemPosition
 
-            // Cek apakah ada file yang dipilih
-            val fileName = if (selectedFileUri != null) getFileName(selectedFileUri!!) else "Tidak ada file"
-            val fileUri = selectedFileUri?.toString() ?: "Tidak ada file"
-
-            // Log informasi yang akan disimpan
             Log.d("DetailTugasActivity", "ID Pengaduan: $idPengaduan")
-            Log.d("DetailTugasActivity", "ID Teknisi: $userId")
-            Log.d("DetailTugasActivity", "Status: $statusPosition - $statusName")
+            Log.d("DetailTugasActivity", "Status: $statusPosition")
             Log.d("DetailTugasActivity", "Keterangan: $keterangan")
-            Log.d("DetailTugasActivity", "Nama File: $fileName")
-            Log.d("DetailTugasActivity", "URI File: $fileUri")
 
             Toast.makeText(this, "Berhasil Simpan Tugas", Toast.LENGTH_SHORT).show()
+
+            if (selectedFileUri == null) {
+                Toast.makeText(this, "Pilih file terlebih dahulu", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Konversi URI ke file
+            val file = File(selectedFileUri!!.path!!)
+            val requestFile = MultipartBody.Part.createFormData(
+                "file_pengaduan",
+                file.name,
+                file.asRequestBody()
+            )
+
+            // Buat request body untuk parameter lainnya
+            val idPengaduanBody = idPengaduan.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+            val keteranganBody = keterangan.toRequestBody("text/plain".toMediaTypeOrNull())
+            val statusBody = statusPosition.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+
+            // Panggil API
+            RetrofitClient.instance.uploadTugas(idPengaduanBody, keteranganBody, statusBody, requestFile)
+                .enqueue(object : Callback<ApiResponse<UploadTugasRequest>> {
+                    override fun onResponse(
+                        call: Call<ApiResponse<UploadTugasRequest>>,
+                        response: Response<ApiResponse<UploadTugasRequest>>
+                    ) {
+                        if (response.isSuccessful) {
+                            val uploadResponse = response.body()
+                            if (uploadResponse?.status == true) {
+                                Toast.makeText(
+                                    this@DetailTugasActivity,
+                                    "Berhasil menyimpan tugas",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Log.d("DetailTugasActivity", "Data: ${uploadResponse.data}")
+                            } else {
+                                Toast.makeText(
+                                    this@DetailTugasActivity,
+                                    uploadResponse?.message ?: "Gagal menyimpan tugas",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } else {
+                            Toast.makeText(
+                                this@DetailTugasActivity,
+                                "Gagal menyimpan tugas: ${response.message()}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ApiResponse<UploadTugasRequest>>, t: Throwable) {
+                        Toast.makeText(
+                            this@DetailTugasActivity,
+                            "Gagal menyimpan tugas: ${t.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.e("DetailTugasActivity", "Error: ${t.message}", t)
+                    }
+                })
         }
     }
-
 
     private fun setupSpinner() {
         val statusList = listOf("Antrian", "Proses", "Selesai", "Batal")

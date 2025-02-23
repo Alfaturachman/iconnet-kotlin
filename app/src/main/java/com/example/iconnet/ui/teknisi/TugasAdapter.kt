@@ -13,13 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.iconnet.R
 import com.example.iconnet.model.Pengaduan
 import com.example.iconnet.ui.teknisi.detail.DetailTugasActivity
-import com.example.iconnet.ui.user.detail.DetailPengaduanActivity
 
 class TugasAdapter(
     private val context: Context,
     private val pengaduanList: List<Pengaduan>,
     private val startForResult: ActivityResultLauncher<Intent>
-
 ) :
     RecyclerView.Adapter<TugasAdapter.ViewHolder>() {
 

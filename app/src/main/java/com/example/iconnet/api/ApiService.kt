@@ -15,11 +15,16 @@ import com.example.iconnet.model.TeknisiData
 import com.example.iconnet.model.TotalStatsResponse
 import com.example.iconnet.model.UpdatePengaduanRequest
 import com.example.iconnet.model.UpdateUserRequest
+import com.example.iconnet.model.UploadTugasRequest
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 
 interface ApiService {
     @POST("login.php")
@@ -33,9 +38,6 @@ interface ApiService {
 
     @POST("get_pengaduan_id_user.php")
     fun getPengaduan(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<Pengaduan>>>
-
-    @POST("get_tugas_teknisi.php")
-    fun getTugasTeknisi(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<Pengaduan>>>
 
     @GET("get_dashboard_admin.php")
     fun getRekapDataPengaduanAdmin(): Call<ApiResponse<DashboardData>>
@@ -81,4 +83,16 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("get_pengaduan_id_pengaduan.php")
     fun getPengaduanByIdPengaduan(@Body request: Map<String, Int>): Call<ApiResponse<Pengaduan>>
+
+    @POST("get_tugas_teknisi.php")
+    fun getTugasTeknisi(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<Pengaduan>>>
+
+    @Multipart
+    @POST("upload_tugas.php")
+    fun uploadTugas(
+        @Part("id_pengaduan") idPengaduan: RequestBody,
+        @Part("keterangan") keterangan: RequestBody,
+        @Part("status_pengaduan") status: RequestBody,
+        @Part file: MultipartBody.Part
+    ): Call<ApiResponse<UploadTugasRequest>>
 }
