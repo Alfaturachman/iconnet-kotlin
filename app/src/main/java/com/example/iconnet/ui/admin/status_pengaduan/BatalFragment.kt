@@ -59,7 +59,7 @@ class BatalFragment : Fragment() {
             override fun onResponse(call: Call<ApiResponse<List<Pengaduan>>>, response: Response<ApiResponse<List<Pengaduan>>>) {
                 if (response.isSuccessful) {
                     val allPengaduan = response.body()?.data ?: emptyList()
-                    val BatalPengaduan = allPengaduan.filter { it.statusPengaduan.toInt() == 4 }
+                    val BatalPengaduan = allPengaduan.filter { it.statusPengaduan.toInt() == 3 }
 
                     Log.d("PengaduanAPI", "Batal Pengaduan: $BatalPengaduan")
 

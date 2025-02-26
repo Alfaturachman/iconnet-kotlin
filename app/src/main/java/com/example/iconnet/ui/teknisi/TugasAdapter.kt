@@ -50,15 +50,25 @@ class TugasAdapter(
 
         // Warna Background status
         val statusColor = when (pengaduan.statusPengaduan.toInt()) {
-            0 -> ContextCompat.getColorStateList(context, R.color.yellow) // Antrian (Kuning)
-            1 -> ContextCompat.getColorStateList(context, R.color.blue)   // Proses (Biru)
-            2 -> ContextCompat.getColorStateList(context, R.color.primary)  // Selesai (Hijau)
-            3 -> ContextCompat.getColorStateList(context, R.color.red)    // Batal (Merah)
-            else -> ContextCompat.getColorStateList(context, R.color.black) // Default Hitam
+            0 -> ContextCompat.getColorStateList(context, R.color.badge_warning)
+            1 -> ContextCompat.getColorStateList(context, R.color.badge_primary)   // Proses (Biru)
+            2 -> ContextCompat.getColorStateList(context, R.color.badge_success) // Selesai (Hijau)
+            3 -> ContextCompat.getColorStateList(context, R.color.badge_danger)    // Batal (Merah)
+            else -> ContextCompat.getColorStateList(context, R.color.badge_dark) // Default Hitam
         }
 
-        // Set background tint
+        // Warna Text status
+        val statusTextColor = when (pengaduan.statusPengaduan.toInt()) {
+            0 -> ContextCompat.getColor(context, R.color.white) // Antrian (Teks hitam agar kontras dengan kuning)
+            1 -> ContextCompat.getColor(context, R.color.white) // Proses (Teks putih agar kontras dengan biru)
+            2 -> ContextCompat.getColor(context, R.color.white) // Selesai (Teks putih agar kontras dengan hijau)
+            3 -> ContextCompat.getColor(context, R.color.white) // Batal (Teks putih agar kontras dengan merah)
+            else -> ContextCompat.getColor(context, R.color.white) // Default Putih
+        }
+
+        // Set warna background dan teks pada TextView status
         holder.tvStatus.backgroundTintList = statusColor
+        holder.tvStatus.setTextColor(statusTextColor)
 
         // Handle klik pada tombol detail
         holder.btnDetail.setOnClickListener {

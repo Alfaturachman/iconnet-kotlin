@@ -1,13 +1,13 @@
-package com.example.iconnet.ui.admin
+package com.example.iconnet.ui.teknisi
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.iconnet.ui.admin.status_pengaduan.AntrianFragment
-import com.example.iconnet.ui.admin.status_pengaduan.ProsesFragment
-import com.example.iconnet.ui.admin.status_pengaduan.SelesaiFragment
-import com.example.iconnet.ui.admin.status_pengaduan.BatalFragment
+import com.example.iconnet.ui.teknisi.status_pengaduan.AntrianTeknisiFragment
+import com.example.iconnet.ui.teknisi.status_pengaduan.ProsesTeknisiFragment
+import com.example.iconnet.ui.teknisi.status_pengaduan.SelesaiTeknisiFragment
+import com.example.iconnet.ui.teknisi.status_pengaduan.BatalTeknisiFragment
 
 class PengaduanPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
@@ -15,10 +15,10 @@ class PengaduanPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecyc
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> AntrianFragment()
-            1 -> ProsesFragment()
-            2 -> SelesaiFragment()
-            3 -> BatalFragment()
+            0 -> AntrianTeknisiFragment()
+            1 -> ProsesTeknisiFragment()
+            2 -> SelesaiTeknisiFragment()
+            3 -> BatalTeknisiFragment()
             else -> throw IllegalArgumentException("Invalid position: $position")
         }
     }
