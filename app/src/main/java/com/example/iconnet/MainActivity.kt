@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val role = sharedPreferences.getString("role", "")
         val userNama = sharedPreferences.getString("nama", null)
-        val userEmail = sharedPreferences.getString("email", null)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView

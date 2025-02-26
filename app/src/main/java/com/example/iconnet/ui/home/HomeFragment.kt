@@ -31,6 +31,7 @@ import java.util.Locale
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private var userId: Int = -1
+    private var userNama: String = "0"
     private var userRole: String = "0"
 
     // This property is only valid between onCreateView and
@@ -50,10 +51,15 @@ class HomeFragment : Fragment() {
         // SharedPreferences
         val sharedPreferences: SharedPreferences = requireContext().getSharedPreferences("UserSession", MODE_PRIVATE)
         userId = sharedPreferences.getInt("id_user", -1)
+        userNama = sharedPreferences.getString("nama", "0").toString()
         userRole = sharedPreferences.getString("role", "0").toString()
+
+        binding.tvNama.text = userNama
 
         when (userRole) {
             "Admin" -> {
+                binding.tvJudul.text = "Kelola Pengaduan User"
+                binding.tvSubJudul.text = "Pastikan setiap pengaduan diproses dengan cepat dan tepat."
                 fetchRekapDataPengaduanAdmin()
                 fetchTotalStatsAdmin()
                 binding.rekapDataUser.visibility = View.VISIBLE
@@ -61,6 +67,8 @@ class HomeFragment : Fragment() {
                 binding.laporanStatsAdmin.visibility = View.VISIBLE
             }
             "Teknisi" -> {
+                binding.tvJudul.text = "Tugas Teknisi Pengaduan"
+                binding.tvSubJudul.text = "Silakan tangani pengaduan sesuai prosedur yang berlaku."
                 fetchRekapDataPengaduanTeknisi(userId)
                 fetchTotalStatsTeknisi(userId)
                 binding.rekapDataUser.visibility = View.GONE
@@ -68,6 +76,8 @@ class HomeFragment : Fragment() {
                 binding.laporanStatsAdmin.visibility = View.VISIBLE
             }
             "User" -> {
+                binding.tvJudul.text = "Ajukan Pengaduan Anda"
+                binding.tvSubJudul.text = "Pengaduan Anda akan segera diproses secepatnya."
                 fetchRekapDataPengaduanUser(userId)
                 fetchTotalStatsUser(userId)
                 binding.rekapDataUser.visibility = View.GONE
