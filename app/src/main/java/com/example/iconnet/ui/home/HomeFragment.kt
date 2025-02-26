@@ -59,14 +59,13 @@ class HomeFragment : Fragment() {
                 binding.rekapDataUser.visibility = View.VISIBLE
                 binding.rekapDataPengaduan.visibility = View.VISIBLE
                 binding.laporanStatsAdmin.visibility = View.VISIBLE
-
             }
             "Teknisi" -> {
-                fetchRekapDataPengaduanAdmin()
+                fetchRekapDataPengaduanTeknisi(userId)
+                fetchTotalStatsTeknisi(userId)
                 binding.rekapDataUser.visibility = View.GONE
                 binding.rekapDataPengaduan.visibility = View.VISIBLE
                 binding.laporanStatsAdmin.visibility = View.VISIBLE
-
             }
             "User" -> {
                 fetchRekapDataPengaduanUser(userId)
@@ -74,7 +73,6 @@ class HomeFragment : Fragment() {
                 binding.rekapDataUser.visibility = View.GONE
                 binding.rekapDataPengaduan.visibility = View.VISIBLE
                 binding.laporanStatsAdmin.visibility = View.VISIBLE
-
             }
         }
 
@@ -151,6 +149,38 @@ class HomeFragment : Fragment() {
         })
     }
 
+    private fun fetchRekapDataPengaduanTeknisi(userId: Int) {
+        val requestBody = mapOf("id_user" to this.userId)
+
+        RetrofitClient.instance.getRekapDataPengaduanTeknisi(requestBody).enqueue(object : Callback<ApiResponse<DashboardData>> {
+            override fun onResponse(call: Call<ApiResponse<DashboardData>>, response: Response<ApiResponse<DashboardData>>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { dashboard ->
+                        Log.d("API_RESPONSE", "Data sukses diterima: $dashboard")
+
+                        val dashboardData = dashboard.data
+                        dashboardData?.let {
+                            binding.tvTotalUserPelanggan.text = it.totalUserPelanggan.toString()
+                            binding.tvTotalUserTeknisi.text = it.totalUserTeknisi.toString()
+                            binding.tvTotalPengaduanAntrian.text = it.totalPengaduanAntrian.toString()
+                            binding.tvTotalPengaduanProses.text = it.totalPengaduanProses.toString()
+                            binding.tvTotalPengaduanSelesai.text = it.totalPengaduanSelesai.toString()
+                            binding.tvTotalPengaduanBatal.text = it.totalPengaduanBatal.toString()
+                        }
+                    }
+                } else {
+                    Log.e("API_RESPONSE", "Gagal mengambil data: ${response.errorBody()?.string()}")
+                    Toast.makeText(requireContext(), "Gagal mengambil data", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<DashboardData>>, t: Throwable) {
+                Log.e("API_ERROR", "Error: ${t.message}", t)
+                Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     private fun fetchTotalStatsAdmin() {
         RetrofitClient.instance.getStatsPengaduanAdmin().enqueue(object : Callback<ApiResponse<List<TotalStatsResponse>>> {
             override fun onResponse(
@@ -173,9 +203,32 @@ class HomeFragment : Fragment() {
     }
 
     private fun fetchTotalStatsUser(userId: Int) {
-        val requestBody = mapOf("instansi_id" to this.userId)
+        val requestBody = mapOf("id_user" to this.userId)
 
         RetrofitClient.instance.getStatsPengaduanUser(requestBody).enqueue(object : Callback<ApiResponse<List<TotalStatsResponse>>> {
+            override fun onResponse(
+                call: Call<ApiResponse<List<TotalStatsResponse>>>,
+                response: Response<ApiResponse<List<TotalStatsResponse>>>
+            ) {
+                if (response.isSuccessful) {
+                    val pengaduanDataList = response.body()?.data
+                    if (pengaduanDataList != null) {
+                        setupBarChart(pengaduanDataList)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<List<TotalStatsResponse>>>, t: Throwable) {
+                // Handle error
+                t.printStackTrace()
+            }
+        })
+    }
+
+    private fun fetchTotalStatsTeknisi(userId: Int) {
+        val requestBody = mapOf("id_teknisi" to this.userId)
+
+        RetrofitClient.instance.getStatsPengaduanTeknisi(requestBody).enqueue(object : Callback<ApiResponse<List<TotalStatsResponse>>> {
             override fun onResponse(
                 call: Call<ApiResponse<List<TotalStatsResponse>>>,
                 response: Response<ApiResponse<List<TotalStatsResponse>>>

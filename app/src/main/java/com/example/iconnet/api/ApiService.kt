@@ -46,12 +46,20 @@ interface ApiService {
     @POST("get_dashboard_user.php")
     fun getRekapDataPengaduanUser(@Body request: Map<String, Int>): Call<ApiResponse<DashboardData>>
 
+    @Headers("Content-Type: application/json")
+    @POST("get_dashboard_teknisi.php")
+    fun getRekapDataPengaduanTeknisi(@Body request: Map<String, Int>): Call<ApiResponse<DashboardData>>
+
     @GET("get_stats_admin.php")
     fun getStatsPengaduanAdmin(): Call<ApiResponse<List<TotalStatsResponse>>>
 
     @Headers("Content-Type: application/json")
     @POST("get_stats_user.php")
     fun getStatsPengaduanUser(@Body request: Map<String, Int>): Call<ApiResponse<List<TotalStatsResponse>>>
+
+    @Headers("Content-Type: application/json")
+    @POST("get_stats_teknisi.php")
+    fun getStatsPengaduanTeknisi(@Body request: Map<String, Int>): Call<ApiResponse<List<TotalStatsResponse>>>
 
     @GET("get_all_teknisi.php")
     fun getTeknisi(): Call<ApiResponse<List<TeknisiData>>>
