@@ -2,9 +2,12 @@ package com.example.iconnet.ui.teknisi.detail
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -17,15 +20,19 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.iconnet.R
 import com.example.iconnet.api.ApiResponse
 import com.example.iconnet.api.ApiService
 import com.example.iconnet.api.RetrofitClient
+import com.example.iconnet.api.RetrofitClient.ip
+import com.example.iconnet.databinding.ActivityDetailTugasBinding
 import com.example.iconnet.model.DetailTeknisi
 import com.example.iconnet.model.Pengaduan
 import com.example.iconnet.model.UploadTugasRequest
@@ -41,19 +48,25 @@ import retrofit2.Response
 class DetailTugasActivity : AppCompatActivity() {
 
     private var userId: Int = -1
+    private var userNama: String = "0"
     private var idPengaduan: Int = -1
     private lateinit var spinnerStatus: Spinner
     private lateinit var etKeterangan: EditText
     private lateinit var tvFileName: TextView
     private lateinit var ivPreview: ImageView
-    private lateinit var btnUploadFile: ImageView
     private lateinit var btnSimpan: Button
+    private lateinit var layoutUpload: LinearLayout
+    private lateinit var layoutUploadDone: LinearLayout
     private var selectedFileUri: Uri? = null
+    private lateinit var binding: ActivityDetailTugasBinding
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_detail_tugas)
+        binding = ActivityDetailTugasBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Set status bar color
         window.statusBarColor = resources.getColor(R.color.white, theme)
@@ -68,23 +81,26 @@ class DetailTugasActivity : AppCompatActivity() {
         // ID User SharedPreferences
         val sharedPreferences = this.getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         userId = sharedPreferences.getInt("id_user", -1)
+        userNama = sharedPreferences.getString("nama", "") ?: ""
         idPengaduan = intent.getIntExtra("id_pengaduan", -1)
 
         // Inisialisasi View
         spinnerStatus = findViewById(R.id.spinnerStatus)
-        btnUploadFile = findViewById(R.id.btnUploadFile)
         tvFileName = findViewById(R.id.tvFileName)
         ivPreview = findViewById(R.id.ivPreview)
         btnSimpan = findViewById(R.id.btnSimpan)
         etKeterangan = findViewById(R.id.etKeterangan)
+        layoutUpload = findViewById(R.id.layoutUpload)
+        layoutUploadDone = findViewById(R.id.layoutUploadDone)
 
         setupSpinner()
 
-        btnUploadFile.setOnClickListener {
+        binding.btnUploadFile.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*" // Hanya gambar yang bisa dipilih
             startActivityForResult(intent, FILE_PICK_REQUEST)
         }
+
         fetchDetailTeknisi(idPengaduan)
         setupButtonSimpan()
     }
@@ -230,10 +246,45 @@ class DetailTugasActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body()?.status == true) {
                     val pengaduan = response.body()?.data
                     pengaduan?.let {
-                        Log.d("DetailTugasActivity", "Detail Data: $it") // Log full object data
+                        Log.d("DetailTugasActivity", "Detail Data: $it")
+
+                        binding.tvTanggalPengaduan.text = it.tglPengaduan
+                        binding.tvIdPelanggan.text = it.idPelanggan
+                        binding.tvNamaPelanggan.text = it.namaUser
+                        binding.tvJudulPengaduan.text = it.judulPengaduan
+                        binding.tvIsiPengaduan.text = it.isiPengaduan
+                        binding.tvAlamat.text = it.alamatPengaduan
+                        binding.tvStatus.text = when (it.statusPengaduan) {
+                            0 -> "Antrian"
+                            1 -> "Proses"
+                            2 -> "Selesai"
+                            3 -> "Batal"
+                            else -> "Tidak Diketahui"
+                        }
+
+                        Log.d("DetailTugasActivity", "teknisiUploadId: ${it.teknisiUploadId}")
+
+                        if (it.teknisiUploadId != null) {
+                            binding.tvKeterangan.text = it.keterangan
+                            binding.tvNamaFile.text = it.filePengaduan
+                            if (!it.filePengaduan.isNullOrEmpty()) {
+                                val imageUrl = "http://$ip:80/iconnet_api/uploads/${it.filePengaduan}"
+
+                                binding.cardviewImage.setOnClickListener {
+                                    showImagePopup(imageUrl)
+                                }
+                            } else {
+                                Log.e("DetailTugasActivity", "File pengaduan kosong atau tidak tersedia")
+                            }
+                            layoutUpload.visibility = View.GONE
+                            layoutUploadDone.visibility = View.VISIBLE
+                        } else {
+                            layoutUpload.visibility = View.VISIBLE
+                            layoutUploadDone.visibility = View.GONE
+                        }
                     }
                 } else {
-                    Log.d("DetailTugasActivity", "Belum ada detail teknisi upload")
+                    Log.d("DetailTugasActivity", "Belum ada data pengaduan atau teknisi upload")
                 }
             }
 
@@ -242,6 +293,21 @@ class DetailTugasActivity : AppCompatActivity() {
                 Toast.makeText(this@DetailTugasActivity, "Gagal menghubungi server", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun showImagePopup(imageUrl: String) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_image_preview)
+
+        val imageView = dialog.findViewById<ImageView>(R.id.ivPreview)
+        Glide.with(this)
+            .load(imageUrl)
+            .placeholder(R.drawable.ic_launcher_foreground) // Placeholder jika gambar belum termuat
+            .error(R.drawable.ic_launcher_background) // Jika gagal memuat gambar
+            .into(imageView)
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
     }
 
     // Fungsi untuk mendapatkan nama asli file dari URI
