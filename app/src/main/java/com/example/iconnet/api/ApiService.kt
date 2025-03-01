@@ -4,6 +4,7 @@ import com.example.iconnet.model.AllUser
 import com.example.iconnet.model.CreateUserRequest
 import com.example.iconnet.model.DashboardData
 import com.example.iconnet.model.DeleteRequest
+import com.example.iconnet.model.DetailTeknisi
 import com.example.iconnet.model.LoginRequest
 import com.example.iconnet.model.RegisterData
 import com.example.iconnet.model.RegisterRequest
@@ -92,6 +93,7 @@ interface ApiService {
     @POST("get_pengaduan_id_pengaduan.php")
     fun getPengaduanByIdPengaduan(@Body request: Map<String, Int>): Call<ApiResponse<Pengaduan>>
 
+    @Headers("Content-Type: application/json")
     @POST("get_tugas_teknisi.php")
     fun getTugasTeknisi(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<Pengaduan>>>
 
@@ -103,4 +105,8 @@ interface ApiService {
         @Part("status_pengaduan") status: RequestBody,
         @Part file: MultipartBody.Part
     ): Call<ApiResponse<UploadTugasRequest>>
+
+    @Headers("Content-Type: application/json")
+    @POST("get_detail_teknisi.php")
+    fun getDetailTeknisi(@Body requestBody: Map<String, Int>): Call<ApiResponse<DetailTeknisi>>
 }

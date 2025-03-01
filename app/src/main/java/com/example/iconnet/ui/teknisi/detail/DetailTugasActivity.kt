@@ -26,6 +26,8 @@ import com.example.iconnet.R
 import com.example.iconnet.api.ApiResponse
 import com.example.iconnet.api.ApiService
 import com.example.iconnet.api.RetrofitClient
+import com.example.iconnet.model.DetailTeknisi
+import com.example.iconnet.model.Pengaduan
 import com.example.iconnet.model.UploadTugasRequest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -83,7 +85,7 @@ class DetailTugasActivity : AppCompatActivity() {
             intent.type = "image/*" // Hanya gambar yang bisa dipilih
             startActivityForResult(intent, FILE_PICK_REQUEST)
         }
-
+        fetchDetailTeknisi(idPengaduan)
         setupButtonSimpan()
     }
 
@@ -199,19 +201,6 @@ class DetailTugasActivity : AppCompatActivity() {
         }
     }
 
-    private fun getRealPathFromURI(uri: Uri): String? {
-        var filePath: String? = null
-        contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                val index = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
-                if (index != -1) {
-                    filePath = cursor.getString(index)
-                }
-            }
-        }
-        return filePath
-    }
-
     private fun setupSpinner() {
         val statusList = listOf("Antrian", "Proses", "Selesai", "Batal")
 
@@ -226,6 +215,33 @@ class DetailTugasActivity : AppCompatActivity() {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+    }
+
+    private fun fetchDetailTeknisi(idPengaduan: Int) {
+        val requestBody = mapOf("id_pengaduan" to idPengaduan)
+
+        Log.d("DetailTugasActivity", "Request Body: $requestBody") // Log request body
+
+        RetrofitClient.instance.getDetailTeknisi(requestBody).enqueue(object : Callback<ApiResponse<DetailTeknisi>> {
+            override fun onResponse(call: Call<ApiResponse<DetailTeknisi>>, response: Response<ApiResponse<DetailTeknisi>>) {
+                Log.d("DetailTugasActivity", "Response Code: ${response.code()}") // Log response code
+                Log.d("DetailTugasActivity", "Response Body: ${response.body()}") // Log response body
+
+                if (response.isSuccessful && response.body()?.status == true) {
+                    val pengaduan = response.body()?.data
+                    pengaduan?.let {
+                        Log.d("DetailTugasActivity", "Detail Data: $it") // Log full object data
+                    }
+                } else {
+                    Log.d("DetailTugasActivity", "Belum ada detail teknisi upload")
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<DetailTeknisi>>, t: Throwable) {
+                Log.e("DetailTugasActivity", "Gagal menghubungi server", t)
+                Toast.makeText(this@DetailTugasActivity, "Gagal menghubungi server", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     // Fungsi untuk mendapatkan nama asli file dari URI
