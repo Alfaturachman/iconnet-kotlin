@@ -38,9 +38,6 @@
             android:name=".ui.admin.master_user.tambah.TambahUserActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.PengaduanActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.admin.tambah_tugas.TambahTugasActivity"
             android:exported="false" />
         <activity
