@@ -20,6 +20,12 @@ import com.example.iconnet.api.RetrofitClient
 import com.example.iconnet.model.TeknisiData
 import com.example.iconnet.model.UpdatePengaduanRequest
 import com.example.iconnet.utils.DateUtils
+import android.app.AlertDialog
+import android.content.Intent
+import com.example.iconnet.model.Pengaduan
+import com.example.iconnet.model.TotalStatsResponse
+import com.example.iconnet.ui.auth.LoginActivity
+import com.example.iconnet.ui.auth.RegisterActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -53,12 +59,14 @@ class TambahTugasActivity : AppCompatActivity() {
         }
 
         // Inisialisasi EditText
+        val etIdPelanggan: TextView = findViewById(R.id.etIdPelanggan)
         val etTanggalPengaduan: TextView = findViewById(R.id.etTanggalPengaduan)
         val etNamaPelanggan: TextView = findViewById(R.id.etNamaPelanggan)
         val etJudulPengaduan: TextView = findViewById(R.id.etJudulPengaduan)
         val etIsiPengaduan: TextView = findViewById(R.id.etIsiPengaduan)
 
         // Ambil data dari Intent
+        val idPelanggan = intent.getStringExtra("id_pelanggan") ?: "N/A"
         idPengaduan = intent.getIntExtra("id_pengaduan", -1)
         val tanggalPengaduan = intent.getStringExtra("tanggal_pengaduan") ?: "N/A"
         val formattedDate = DateUtils.formatTanggal(tanggalPengaduan)
@@ -79,10 +87,26 @@ class TambahTugasActivity : AppCompatActivity() {
         setupSpinnerTeknisi()
 
         // Set nilai ke EditText
+        etIdPelanggan.setText(idPelanggan)
         etTanggalPengaduan.setText(formattedDate)
         etNamaPelanggan.setText(namaPelanggan)
         etJudulPengaduan.setText(judulPengaduan)
         etIsiPengaduan.setText(isiPengaduan)
+
+        val btnHapus: Button = findViewById(R.id.btnSimpanStatus)
+        btnHapus.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Konfirmasi Penghapusan")
+                .setMessage("Apakah Anda yakin ingin menghapus pengaduan ini?")
+                .setPositiveButton("Ya") { dialog, _ ->
+                    dialog.dismiss()
+                    hapusPengaduan(idPengaduan)
+                }
+                .setNegativeButton("Batal") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
 
         // Button Simpan
         btnTambahTugas.setOnClickListener {
@@ -121,6 +145,29 @@ class TambahTugasActivity : AppCompatActivity() {
                     }
                 })
         }
+    }
+
+    private fun hapusPengaduan(pengaduanId: Int) {
+        val requestBody = mapOf("id_pengaduan" to pengaduanId)
+
+        RetrofitClient.instance.deletePengaduan(requestBody).enqueue(object : Callback<ApiResponse<Pengaduan>> {
+            override fun onResponse(call: Call<ApiResponse<Pengaduan>>, response: Response<ApiResponse<Pengaduan>>) {
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    Toast.makeText(this@TambahTugasActivity, apiResponse?.message, Toast.LENGTH_SHORT).show()
+                    Log.d("TambahTugasActivity", "Response: ${apiResponse?.message}")
+                    setResult(RESULT_OK)
+                    finish()
+                } else {
+                    Toast.makeText(this@TambahTugasActivity, "Gagal menghapus data", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<Pengaduan>>, t: Throwable) {
+                Toast.makeText(this@TambahTugasActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                Log.e("TambahTugasActivity", "Error: ${t.message}")
+            }
+        })
     }
 
     private fun updateButtonState() {

@@ -88,7 +88,7 @@ class HomeFragment : Fragment() {
 
         // Ambil waktu hari ini
         val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("MMMM yyyy", Locale("id", "ID")) // Format: Januari 2025
+        val dateFormat = SimpleDateFormat("yyyy", Locale("id", "ID")) // Format: Januari 2025
         val bulanTahun = dateFormat.format(calendar.time)
 
         // Tampilkan di TextView

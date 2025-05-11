@@ -21,6 +21,13 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="RoundedButtonRed" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:background">@drawable/button_rounded</item>
+        <item name="backgroundTint">@color/badge_danger</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
     <style name="RoundedButtonWhite" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:background">@drawable/button_rounded</item>
         <item name="backgroundTint">@color/white</item>

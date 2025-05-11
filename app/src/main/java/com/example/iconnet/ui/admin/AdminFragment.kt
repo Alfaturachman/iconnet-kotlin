@@ -43,6 +43,17 @@ class AdminFragment : Fragment() {
         }.attach()
     }
 
+    private fun refreshFragments() {
+        val adapter = binding.viewPager.adapter
+        binding.viewPager.adapter = null
+        binding.viewPager.adapter = adapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshFragments()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

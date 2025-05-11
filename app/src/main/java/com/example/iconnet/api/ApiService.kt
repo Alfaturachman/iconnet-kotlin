@@ -109,4 +109,7 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("get_detail_teknisi.php")
     fun getDetailTeknisi(@Body requestBody: Map<String, Int>): Call<ApiResponse<DetailTeknisi>>
+
+    @POST("delete_pengaduan.php")
+    fun deletePengaduan(@Body body: Map<String, Int>): Call<ApiResponse<Pengaduan>>
 }
