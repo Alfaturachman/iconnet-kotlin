@@ -1,21 +1,28 @@
 package com.example.iconnet.ui.user.detail
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iconnet.R
 import com.example.iconnet.api.ApiResponse
 import com.example.iconnet.api.RetrofitClient
 import com.example.iconnet.model.Pengaduan
+import com.example.iconnet.ui.user.edit.EditPengaduanActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class DetailPengaduanActivity : AppCompatActivity() {
+    private lateinit var editLauncher: ActivityResultLauncher<Intent>
     private lateinit var etTanggalPengaduan: TextView
     private lateinit var etIdPelanggan: TextView
     private lateinit var etNamaPelanggan: TextView
@@ -27,6 +34,7 @@ class DetailPengaduanActivity : AppCompatActivity() {
 
     private var idPengaduan: Int = -1
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_pengaduan)
@@ -50,7 +58,22 @@ class DetailPengaduanActivity : AppCompatActivity() {
         // Button kembali
         val btnKembali: ImageButton = findViewById(R.id.btnKembali)
         btnKembali.setOnClickListener {
+            setResult(RESULT_OK)
             finish()
+        }
+
+        // Register result launcher
+        editLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                fetchDetailPengaduan(idPengaduan)
+            }
+        }
+
+        val btnEditPengaduan: Button = findViewById(R.id.btnEditPengaduan)
+        btnEditPengaduan.setOnClickListener {
+            val intent = Intent(this, EditPengaduanActivity::class.java)
+            intent.putExtra("id_pengaduan", idPengaduan)
+            editLauncher.launch(intent)
         }
 
         // Ambil ID Pengaduan dari Intent

@@ -112,4 +112,7 @@ interface ApiService {
 
     @POST("delete_pengaduan.php")
     fun deletePengaduan(@Body body: Map<String, Int>): Call<ApiResponse<Pengaduan>>
+
+    @POST("update_pengaduan.php")
+    fun updateUserPengaduan(@Body requestBody: Map<String, String>): Call<ApiResponse<Pengaduan>>
 }
